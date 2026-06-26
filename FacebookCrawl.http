@@ -1,0 +1,141 @@
+@baseUrl = http://localhost:5000
+
+### Facebook Crawl - Single Target
+POST {{baseUrl}}/crawl/facebook
+Content-Type: application/json
+
+{
+  "target": "duynghiem93",
+  "cookies": [
+    { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
+    { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
+    { "name": "fr", "value": "1GbZ5IY7X4PF65Uif.AWd75rFYHuW_D4YOgjJCytaCnbKRfy46rCmDdOCeYU9lfmZCIHA.BqPJOf..AAA.0.0.BqPJOf.AWeks3vgIQ9f6J8BaZ87vjHxJBI", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1790130847.977495, "sameSite": "no_restriction" },
+    { "name": "xs", "value": "36%3AON89iJELbI0OpQ%3A2%3A1781496472%3A-1%3A-1%3A%3AAcxIBVI9CKT3PhiML8karB_yuD_y_32IjhTiGuWnaGA", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813890847.977549, "sameSite": "no_restriction" },
+    { "name": "c_user", "value": "61553188067359", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1813890847.977393, "sameSite": "no_restriction" },
+    { "name": "presence", "value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1782354847687%2C%22v%22%3A1%7D", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "session": true },
+    { "name": "ps_n", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.657753, "sameSite": "no_restriction" },
+    { "name": "sb", "value": "R6SaaE4q4ptY_5hQ3SJ__JPh", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1816056475.479, "sameSite": "no_restriction" },
+    { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1782959647, "sameSite": "lax" }
+  ],
+  "start_date": "2026-06-23",
+  "end_date": "2026-06-25",
+  "facebook_max_posts": 50
+}
+
+###
+
+### Facebook Crawl - Multiple Targets
+POST {{baseUrl}}/crawl/facebook
+Content-Type: application/json
+
+{
+  "targets": [
+    "username1",
+    "username2",
+    "username3"
+  ],
+  "cookies": [
+    { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
+    { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
+    { "name": "fr", "value": "1GbZ5IY7X4PF65Uif.AWd75rFYHuW_D4YOgjJCytaCnbKRfy46rCmDdOCeYU9lfmZCIHA.BqPJOf..AAA.0.0.BqPJOf.AWeks3vgIQ9f6J8BaZ87vjHxJBI", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1790130847.977495, "sameSite": "no_restriction" },
+    { "name": "xs", "value": "36%3AON89iJELbI0OpQ%3A2%3A1781496472%3A-1%3A-1%3A%3AAcxIBVI9CKT3PhiML8karB_yuD_y_32IjhTiGuWnaGA", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813890847.977549, "sameSite": "no_restriction" },
+    { "name": "c_user", "value": "61553188067359", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1813890847.977393, "sameSite": "no_restriction" },
+    { "name": "presence", "value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1782354847687%2C%22v%22%3A1%7D", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "session": true },
+    { "name": "ps_n", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.657753, "sameSite": "no_restriction" },
+    { "name": "sb", "value": "R6SaaE4q4ptY_5hQ3SJ__JPh", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1816056475.479, "sameSite": "no_restriction" },
+    { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1782959647, "sameSite": "lax" }
+  ],
+  "start_date": "2025-06-01",
+  "end_date": "2026-06-25",
+  "facebook_max_posts": 100
+}
+
+###
+
+### Facebook Crawl - With Stop URLs
+POST {{baseUrl}}/crawl/facebook
+Content-Type: application/json
+
+{
+  "target": "username",
+  "cookies": [
+    { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
+    { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
+    { "name": "fr", "value": "1GbZ5IY7X4PF65Uif.AWd75rFYHuW_D4YOgjJCytaCnbKRfy46rCmDdOCeYU9lfmZCIHA.BqPJOf..AAA.0.0.BqPJOf.AWeks3vgIQ9f6J8BaZ87vjHxJBI", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1790130847.977495, "sameSite": "no_restriction" },
+    { "name": "xs", "value": "36%3AON89iJELbI0OpQ%3A2%3A1781496472%3A-1%3A-1%3A%3AAcxIBVI9CKT3PhiML8karB_yuD_y_32IjhTiGuWnaGA", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813890847.977549, "sameSite": "no_restriction" },
+    { "name": "c_user", "value": "61553188067359", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1813890847.977393, "sameSite": "no_restriction" },
+    { "name": "presence", "value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1782354847687%2C%22v%22%3A1%7D", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "session": true },
+    { "name": "ps_n", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.657753, "sameSite": "no_restriction" },
+    { "name": "sb", "value": "R6SaaE4q4ptY_5hQ3SJ__JPh", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1816056475.479, "sameSite": "no_restriction" },
+    { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1782959647, "sameSite": "lax" }
+  ],
+  "start_date": "2026-01-01",
+  "end_date": "2026-06-25",
+  "facebook_max_posts": 200,
+  "stop_urls": [
+    "https://www.facebook.com/stop/here",
+    "https://www.facebook.com/another/stop"
+  ]
+}
+
+###
+
+### Facebook Crawl - With Scroll Config
+POST {{baseUrl}}/crawl/facebook
+Content-Type: application/json
+
+{
+  "target": "username",
+  "cookies": [
+    { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
+    { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
+    { "name": "fr", "value": "1GbZ5IY7X4PF65Uif.AWd75rFYHuW_D4YOgjJCytaCnbKRfy46rCmDdOCeYU9lfmZCIHA.BqPJOf..AAA.0.0.BqPJOf.AWeks3vgIQ9f6J8BaZ87vjHxJBI", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1790130847.977495, "sameSite": "no_restriction" },
+    { "name": "xs", "value": "36%3AON89iJELbI0OpQ%3A2%3A1781496472%3A-1%3A-1%3A%3AAcxIBVI9CKT3PhiML8karB_yuD_y_32IjhTiGuWnaGA", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813890847.977549, "sameSite": "no_restriction" },
+    { "name": "c_user", "value": "61553188067359", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1813890847.977393, "sameSite": "no_restriction" },
+    { "name": "presence", "value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1782354847687%2C%22v%22%3A1%7D", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "session": true },
+    { "name": "ps_n", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.657753, "sameSite": "no_restriction" },
+    { "name": "sb", "value": "R6SaaE4q4ptY_5hQ3SJ__JPh", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1816056475.479, "sameSite": "no_restriction" },
+    { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1782959647, "sameSite": "lax" }
+  ],
+  "start_date": "2026-01-01",
+  "end_date": "2026-06-25",
+  "facebook_max_posts": 150,
+  "scroll_max_times": 50,
+  "scroll_delay_ms": 1000,
+  "scroll_wait_ms": 2000
+}
+
+###
+
+### Facebook Session Validation
+POST {{baseUrl}}/validate_facebook_session
+Content-Type: application/json
+
+{
+  "session_data": [
+    { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
+    { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
+    { "name": "fr", "value": "1GbZ5IY7X4PF65Uif.AWd75rFYHuW_D4YOgjJCytaCnbKRfy46rCmDdOCeYU9lfmZCIHA.BqPJOf..AAA.0.0.BqPJOf.AWeks3vgIQ9f6J8BaZ87vjHxJBI", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1790130847.977495, "sameSite": "no_restriction" },
+    { "name": "xs", "value": "36%3AON89iJELbI0OpQ%3A2%3A1781496472%3A-1%3A-1%3A%3AAcxIBVI9CKT3PhiML8karB_yuD_y_32IjhTiGuWnaGA", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813890847.977549, "sameSite": "no_restriction" },
+    { "name": "c_user", "value": "61553188067359", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1813890847.977393, "sameSite": "no_restriction" },
+    { "name": "presence", "value": "C%7B%22t3%22%3A%5B%5D%2C%22utc3%22%3A1782354847687%2C%22v%22%3A1%7D", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "session": true },
+    { "name": "ps_n", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.657753, "sameSite": "no_restriction" },
+    { "name": "sb", "value": "R6SaaE4q4ptY_5hQ3SJ__JPh", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1816056475.479, "sameSite": "no_restriction" },
+    { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1782959647, "sameSite": "lax" }
+  ]
+}
+
+###
+
+### Cancel Running Crawl
+POST {{baseUrl}}/cancel
+
+###
+
+### Check System Status
+GET {{baseUrl}}/status
+
+###
+
+### Health Check
+GET {{baseUrl}}/health
