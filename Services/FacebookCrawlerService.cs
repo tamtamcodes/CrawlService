@@ -240,12 +240,12 @@ public class FacebookCrawlerService
                     collectedPosts.Add(post);
 
                     // Log raw JSON and parsed post
-                    await CrawlLogger.LogRawJsonAsync("facebook", target, postId, storyJson);
+                    // await CrawlLogger.LogRawJsonAsync("facebook", target, postId, storyJson);
 
                     // Log transcript if available
-                    await CrawlLogger.LogTranscriptAsync("facebook", target, postId, storyJson);
+                    // await CrawlLogger.LogTranscriptAsync("facebook", target, postId, storyJson);
 
-                    await CrawlLogger.LogParsedPostAsync("facebook", target, post);
+                    // await CrawlLogger.LogParsedPostAsync("facebook", target, post);
 
                     Console.WriteLine($"[Facebook Crawl] Found: {post.PostUrl} | Likes: {post.Likes} | Comments: {post.Comments} | Shares: {post.Shares}");
                     yield return new CrawlEvent

@@ -12,120 +12,105 @@ public static class CrawlLogger
         WriteIndented = true
     };
 
-    public static async Task LogRawJsonAsync(string platform, string target, string postId, JsonElement rawData)
+    public static async Task<TikTokRawTranscript?> LogItemAsync(string target, TikTokRawItem raw, JsonElement rawElement)
     {
         try
         {
-            var outputDir = Path.Combine("output", platform, "raw");
-            Directory.CreateDirectory(outputDir);
-
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var safeTarget = SanitizeFileName(target);
-            var safePostId = SanitizeFileName(postId);
-            var filename = $"{timestamp}_{safeTarget}_{safePostId}_raw.json";
-            var filepath = Path.Combine(outputDir, filename);
+            var safeId = SanitizeFileName(raw.Id ?? "unknown");
 
-            var json = JsonSerializer.Serialize(rawData, JsonOptions);
-            await File.WriteAllTextAsync(filepath, json, Encoding.UTF8);
+            // Log raw JSON
+            // var rawDir = Path.Combine("output", "tiktok", "raw");
+            // Directory.CreateDirectory(rawDir);
+            // var rawJson = JsonSerializer.Serialize(rawElement, JsonOptions);
+            // await File.WriteAllTextAsync(
+            //     Path.Combine(rawDir, $"{timestamp}_{safeTarget}_{safeId}_raw.json"),
+            //     rawJson, Encoding.UTF8);
+
+            // Extract & log transcript
+            var transcript = await ExtractAndLogTranscriptAsync(timestamp, safeTarget, safeId, rawElement);
+            return transcript;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to log raw JSON: {ex.Message}");
+            Console.WriteLine($"[ERROR] LogItemAsync failed for {raw.Id}: {ex.Message}");
+            return null;
         }
     }
 
-    public static async Task LogTranscriptAsync(string platform, string target, string postId, JsonElement rawItem)
+    public static async Task LogErrorAsync(string target, string errorMessage)
     {
         try
         {
-            var outputDir = Path.Combine("output", platform, "transcripts");
+            var outputDir = Path.Combine("output", "tiktok", "errors");
             Directory.CreateDirectory(outputDir);
-
             var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             var safeTarget = SanitizeFileName(target);
-            var safePostId = SanitizeFileName(postId);
-            var filename = $"{timestamp}_{safeTarget}_{safePostId}_transcript.json";
-            var filepath = Path.Combine(outputDir, filename);
-
-            var transcript = await ExtractTranscriptAsync(rawItem);
-            if (transcript == null) return;
-
-            var json = JsonSerializer.Serialize(transcript, JsonOptions);
-            await File.WriteAllTextAsync(filepath, json, Encoding.UTF8);
+            await File.WriteAllTextAsync(
+                Path.Combine(outputDir, $"{timestamp}_{safeTarget}_error.txt"),
+                errorMessage, Encoding.UTF8);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to log transcript: {ex.Message}");
+            Console.WriteLine($"[ERROR] LogErrorAsync failed: {ex.Message}");
         }
     }
 
-    private static async Task<TranscriptData?> ExtractTranscriptAsync(JsonElement rawItem)
+    private static async Task<TikTokRawTranscript?> ExtractAndLogTranscriptAsync(
+        string timestamp, string safeTarget, string safeId, JsonElement rawElement)
     {
         try
         {
-            var transcript = new TranscriptData();
-            var captions = new List<CaptionEntry>();
+            if (!rawElement.TryGetProperty("video", out var videoEl) || videoEl.ValueKind != JsonValueKind.Object)
+                return null;
+            if (!videoEl.TryGetProperty("claInfo", out var claInfo) || claInfo.ValueKind != JsonValueKind.Object)
+                return null;
+            if (!claInfo.TryGetProperty("captionInfos", out var captionInfos) || captionInfos.ValueKind != JsonValueKind.Array)
+                return null;
 
-            // Try TikTok format first
-            if (rawItem.TryGetProperty("video", out var videoEl) && videoEl.ValueKind == JsonValueKind.Object)
+            foreach (var captionInfo in captionInfos.EnumerateArray())
             {
-                if (videoEl.TryGetProperty("claInfo", out var claInfo) && claInfo.ValueKind == JsonValueKind.Object)
+                if (captionInfo.ValueKind != JsonValueKind.Object) continue;
+
+                var language = captionInfo.TryGetProperty("language", out var lang) ? lang.GetString() : "unknown";
+                var isAutoGen = captionInfo.TryGetProperty("isAutoGen", out var autoGen) && autoGen.ValueKind == JsonValueKind.True;
+
+                string? subtitleUrl = null;
+                if (captionInfo.TryGetProperty("url", out var urlProp))
+                    subtitleUrl = urlProp.GetString();
+
+                if (string.IsNullOrEmpty(subtitleUrl) &&
+                    captionInfo.TryGetProperty("urlList", out var urlList) &&
+                    urlList.ValueKind == JsonValueKind.Array)
+                    subtitleUrl = urlList.EnumerateArray()
+                        .Select(u => u.GetString())
+                        .FirstOrDefault(u => !string.IsNullOrEmpty(u));
+
+                if (string.IsNullOrEmpty(subtitleUrl)) continue;
+
+                var vttContent = await DownloadWebVttAsync(subtitleUrl);
+                if (string.IsNullOrEmpty(vttContent)) continue;
+
+                var entries = ParseWebVtt(vttContent);
+                if (entries.Count == 0) continue;
+
+                var transcript = new TikTokRawTranscript
                 {
-                    if (claInfo.TryGetProperty("captionInfos", out var captionInfos) && captionInfos.ValueKind == JsonValueKind.Array)
-                    {
-                        foreach (var captionInfo in captionInfos.EnumerateArray())
-                        {
-                            if (captionInfo.ValueKind != JsonValueKind.Object) continue;
+                    HasTranscript = true,
+                    Language = language,
+                    IsAutoGenerated = isAutoGen,
+                    Captions = entries
+                };
 
-                            var language = captionInfo.TryGetProperty("language", out var lang) ? lang.GetString() : "unknown";
-                            var isAutoGen = captionInfo.TryGetProperty("isAutoGen", out var autoGen) && autoGen.ValueKind == JsonValueKind.True;
-
-                            // Get subtitle URL
-                            string? subtitleUrl = null;
-                            if (captionInfo.TryGetProperty("url", out var urlProp))
-                                subtitleUrl = urlProp.GetString();
-                            else if (captionInfo.TryGetProperty("urlList", out var urlList) && urlList.ValueKind == JsonValueKind.Array)
-                            {
-                                var urls = urlList.EnumerateArray().Select(u => u.GetString()).FirstOrDefault(u => !string.IsNullOrEmpty(u));
-                                subtitleUrl = urls;
-                            }
-
-                            if (string.IsNullOrEmpty(subtitleUrl)) continue;
-
-                            // Download and parse WebVTT
-                            var vttContent = await DownloadWebVttAsync(subtitleUrl);
-                            if (string.IsNullOrEmpty(vttContent)) continue;
-
-                            var entries = ParseWebVtt(vttContent);
-                            if (entries.Count > 0)
-                            {
-                                transcript.Language = language;
-                                transcript.IsAutoGenerated = isAutoGen;
-                                transcript.HasTranscript = true;
-                                captions.AddRange(entries);
-                            }
-
-                            // Only take first language for now
-                            break;
-                        }
-                    }
-                }
-            }
-            // Try Facebook format (if available)
-            else if (rawItem.TryGetProperty("attachments", out var attachments) && attachments.ValueKind == JsonValueKind.Array)
-            {
-                // Facebook might have captions in different format
-                // For now, we'll just mark that transcripts might be available
-                transcript.HasTranscript = false;
-                transcript.Language = "unknown";
+                return transcript;
             }
 
-            transcript.Captions = captions;
-            return transcript.HasTranscript ? transcript : null;
+            return null;
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to extract transcript: {ex.Message}");
+            Console.WriteLine($"[ERROR] ExtractAndLogTranscriptAsync failed: {ex.Message}");
             return null;
         }
     }
@@ -138,117 +123,65 @@ public static class CrawlLogger
             httpClient.Timeout = TimeSpan.FromSeconds(30);
             var response = await httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode) return null;
-
             return await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to download WebVTT: {ex.Message}");
+            Console.WriteLine($"[ERROR] DownloadWebVttAsync failed: {ex.Message}");
             return null;
         }
     }
 
-    private static List<CaptionEntry> ParseWebVtt(string vttContent)
+    private static List<TikTokRawCaptionEntry> ParseWebVtt(string vttContent)
     {
-        var entries = new List<CaptionEntry>();
-
+        var entries = new List<TikTokRawCaptionEntry>();
         try
         {
             var lines = vttContent.Split('\n', '\r');
             var i = 0;
 
-            // Skip WebVTT header
             while (i < lines.Length && !lines[i].Contains("-->")) i++;
 
             for (; i < lines.Length; i++)
             {
                 var line = lines[i]?.Trim();
                 if (string.IsNullOrEmpty(line) || line.StartsWith("NOTE") || line.StartsWith("STYLE")) continue;
+                if (!line.Contains("-->")) continue;
 
-                // Look for timestamp line: "00:00:00.000 --> 00:00:05.000"
-                if (line.Contains("-->"))
+                var parts = line.Split(new[] { "-->" }, StringSplitOptions.None);
+                if (parts.Length != 2) continue;
+
+                var startTime = parts[0].Trim();
+                var endTime = parts[1].Trim();
+
+                var textBuilder = new StringBuilder();
+                var j = i + 1;
+                while (j < lines.Length && !string.IsNullOrEmpty(lines[j]?.Trim()))
                 {
-                    var parts = line.Split(new[] { "-->" }, StringSplitOptions.None);
-                    if (parts.Length == 2)
-                    {
-                        var startTime = parts[0].Trim();
-                        var endTime = parts[1].Trim();
-
-                        // Get text content (next non-empty lines)
-                        var textBuilder = new StringBuilder();
-                        var j = i + 1;
-                        while (j < lines.Length && !string.IsNullOrEmpty(lines[j]?.Trim()))
-                        {
-                            if (textBuilder.Length > 0) textBuilder.Append(' ');
-                            textBuilder.Append(lines[j]?.Trim());
-                            j++;
-                        }
-
-                        var text = textBuilder.ToString().Trim();
-                        if (!string.IsNullOrEmpty(text))
-                        {
-                            entries.Add(new CaptionEntry
-                            {
-                                StartTime = startTime,
-                                EndTime = endTime,
-                                Text = text
-                            });
-                        }
-
-                        i = j - 1; // Skip processed lines
-                    }
+                    if (textBuilder.Length > 0) textBuilder.Append(' ');
+                    textBuilder.Append(lines[j]?.Trim());
+                    j++;
                 }
+
+                var text = textBuilder.ToString().Trim();
+                if (!string.IsNullOrEmpty(text))
+                {
+                    entries.Add(new TikTokRawCaptionEntry
+                    {
+                        StartTime = startTime,
+                        EndTime = endTime,
+                        Text = text
+                    });
+                }
+
+                i = j - 1;
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[ERROR] Failed to parse WebVTT: {ex.Message}");
+            Console.WriteLine($"[ERROR] ParseWebVtt failed: {ex.Message}");
         }
-
         return entries;
-    }
-
-    public static async Task LogParsedPostAsync(string platform, string target, PostData postData)
-    {
-        try
-        {
-            var outputDir = Path.Combine("output", platform, "parsed");
-            Directory.CreateDirectory(outputDir);
-
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var safeTarget = SanitizeFileName(target);
-            var postId = ExtractPostIdFromUrl(postData.PostUrl);
-            var safePostId = SanitizeFileName(postId);
-            var filename = $"{timestamp}_{safeTarget}_{safePostId}_parsed.json";
-            var filepath = Path.Combine(outputDir, filename);
-
-            var json = JsonSerializer.Serialize(postData, JsonOptions);
-            await File.WriteAllTextAsync(filepath, json, Encoding.UTF8);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[ERROR] Failed to log parsed post: {ex.Message}");
-        }
-    }
-
-    public static async Task LogErrorAsync(string platform, string target, string errorMessage)
-    {
-        try
-        {
-            var outputDir = Path.Combine("output", platform, "errors");
-            Directory.CreateDirectory(outputDir);
-
-            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var safeTarget = SanitizeFileName(target);
-            var filename = $"{timestamp}_{safeTarget}_error.txt";
-            var filepath = Path.Combine(outputDir, filename);
-
-            await File.WriteAllTextAsync(filepath, errorMessage, Encoding.UTF8);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[ERROR] Failed to log error: {ex.Message}");
-        }
     }
 
     private static string SanitizeFileName(string fileName)
@@ -257,44 +190,11 @@ public static class CrawlLogger
         var sanitized = new StringBuilder();
         foreach (var c in fileName)
         {
-            if (invalidChars.Contains(c))
-                sanitized.Append('_');
-            else if (c == ' ' || c == '\t' || c == '\n' || c == '\r')
+            if (invalidChars.Contains(c) || c == ' ' || c == '\t' || c == '\n' || c == '\r')
                 sanitized.Append('_');
             else
                 sanitized.Append(c);
         }
         return sanitized.ToString();
-    }
-
-    private static string ExtractPostIdFromUrl(string url)
-    {
-        try
-        {
-            if (string.IsNullOrEmpty(url)) return "unknown";
-
-            // TikTok URL format: https://www.tiktok.com/@username/video/1234567890
-            if (url.Contains("tiktok.com"))
-            {
-                var parts = url.Split('/');
-                var lastPart = parts[^1].Split('?')[0];
-                return long.TryParse(lastPart, out _) ? lastPart : "unknown";
-            }
-
-            // Facebook URL format: various formats
-            if (url.Contains("facebook.com"))
-            {
-                var uri = new Uri(url);
-                var path = uri.AbsolutePath;
-                var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                return segments.Length > 0 ? segments[^1] : "unknown";
-            }
-
-            return "unknown";
-        }
-        catch
-        {
-            return "unknown";
-        }
     }
 }

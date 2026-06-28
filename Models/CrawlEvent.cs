@@ -38,6 +38,7 @@ public class CrawlEvent
     [JsonPropertyName("aborted")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Aborted { get; set; }
+    public List<TikTokRawItem>? RawItems { get; set; }
 }
 
 public class PostData

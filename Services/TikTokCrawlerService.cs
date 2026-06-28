@@ -107,7 +107,7 @@ public class TikTokCrawlerService
         if (!string.IsNullOrEmpty(endDateStr) && TryParseIsoToUnix(endDateStr, out var et))
             endTime = et;
 
-        var allVideos = new List<TikTokVideoData>();
+        var allRaws = new List<TikTokRawItem>();
         var abortAll = false;
         var completedTargets = new HashSet<string>();
         const int maxBrowserRetries = 3;
@@ -135,9 +135,13 @@ public class TikTokCrawlerService
             {
                 var pwCookies = cookies.Select(c => new Microsoft.Playwright.Cookie
                 {
-                    Name = c.Name, Value = c.Value, Domain = c.Domain, Path = c.Path,
+                    Name = c.Name,
+                    Value = c.Value,
+                    Domain = c.Domain,
+                    Path = c.Path,
                     Expires = c.Expires.HasValue ? (float)c.Expires.Value : -1,
-                    Secure = c.Secure ?? false, HttpOnly = c.HttpOnly ?? false
+                    Secure = c.Secure ?? false,
+                    HttpOnly = c.HttpOnly ?? false
                 }).ToList();
                 await context.AddCookiesAsync(pwCookies);
             }
@@ -164,7 +168,7 @@ public class TikTokCrawlerService
                 var hasMore = true;
                 var seenIds = new HashSet<string?>();
                 var pageCount = 0;
-                var targetVideos = new List<TikTokVideoData>();
+                var targetRaws = new List<TikTokRawItem>();
                 var targetHasError = false;
 
                 yield return new CrawlEvent { Type = "log", Message = $"Đang trích xuất secUid cho: {target}..." };
@@ -234,8 +238,8 @@ public class TikTokCrawlerService
                         Target = target,
                         Page = pageCount,
                         MaxPages = MaxPages,
-                        Collected = targetVideos.Count,
-                        Message = $"Đang cào trang {pageCount} tại offset {cursor}... (Đã thu thập: {targetVideos.Count} video của mục tiêu này)"
+                        Collected = targetRaws.Count,
+                        Message = $"Đang cào trang {pageCount} tại offset {cursor}... (Đã thu thập: {targetRaws.Count} video của mục tiêu này)"
                     };
 
                     JsonElement? data = null;
@@ -316,37 +320,34 @@ public class TikTokCrawlerService
                     long? oldestInPage = null;
                     foreach (var item in items)
                     {
-                        var video = TikTokVideoParser.ParseVideoItem(item);
-                        var createTime = video.CreateTime;
+                        var raw = TikTokVideoParser.ParseVideoItem(item);
+                        var createTime = raw.CreateTime;
 
                         if (oldestInPage == null || createTime < oldestInPage)
                             oldestInPage = createTime;
 
                         if (endTime.HasValue && createTime > endTime.Value) continue;
-                        if (createTime >= startTime && !seenIds.Contains(video.Id))
+                        
+                        if (createTime >= startTime && !seenIds.Contains(raw.Id))
                         {
-                            seenIds.Add(video.Id);
-                            targetVideos.Add(video);
+                            seenIds.Add(raw.Id);
+                            raw.Transcript = await CrawlLogger.LogItemAsync(target, raw, item);
+                            targetRaws.Add(raw);
 
-                            // Log raw JSON and parsed post
-                            await CrawlLogger.LogRawJsonAsync("tiktok", target, video.Id ?? "unknown", item);
+                            var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 
-                            // Log transcript if available
-                            await CrawlLogger.LogTranscriptAsync("tiktok", target, video.Id ?? "unknown", item);
-
-                            await CrawlLogger.LogParsedPostAsync("tiktok", target, new PostData
+                            // Log raw JSON
+                            JsonSerializerOptions JsonOptions = new()
                             {
-                                Platform = "tiktok",
-                                PostUrl = video.Url,
-                                Caption = video.Desc ?? "",
-                                PublishedAt = DateTimeOffset.FromUnixTimeSeconds(video.CreateTime).ToString("o"),
-                                AuthorName = video.Author?.Nickname,
-                                AuthorId = video.Author?.UniqueId,
-                                Views = video.Views,
-                                Likes = video.Likes,
-                                Comments = video.Comments,
-                                Shares = video.Shares
-                            });
+                                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                                WriteIndented = true
+                            };
+                            var rawDir = Path.Combine("output", "tiktok", "raw");
+                            Directory.CreateDirectory(rawDir);
+                            var rawJson = JsonSerializer.Serialize(raw.Transcript, JsonOptions);
+                            await File.WriteAllTextAsync(
+                                Path.Combine(rawDir, $"{timestamp}_{target}_{raw.Id}_raw.json"),
+                                rawJson, Encoding.UTF8);
                         }
                     }
 
@@ -379,14 +380,14 @@ public class TikTokCrawlerService
                 if (abortAll) break;
 
                 completedTargets.Add(target);
-                allVideos.AddRange(targetVideos);
+                allRaws.AddRange(targetRaws);
 
                 yield return new CrawlEvent
                 {
                     Type = "log",
                     Message = targetHasError
-                        ? $"⚠️ Thu thập không trọn vẹn mục tiêu {target} (chỉ được {targetVideos.Count} video do lỗi)."
-                        : $"✅ Hoàn tất mục tiêu {target} (thu thập {targetVideos.Count} video)."
+                        ? $"⚠️ Thu thập không trọn vẹn mục tiêu {target} (chỉ được {targetRaws.Count} video do lỗi)."
+                        : $"✅ Hoàn tất mục tiêu {target} (thu thập {targetRaws.Count} video)."
                 };
 
                 if (browserCrashed) break;
@@ -403,20 +404,8 @@ public class TikTokCrawlerService
         yield return new CrawlEvent
         {
             Type = "done",
-            Count = allVideos.Count,
-            Videos = allVideos.Select(v => new PostData
-            {
-                Platform = "tiktok",
-                PostUrl = v.Url,
-                Caption = v.Desc ?? "",
-                PublishedAt = DateTimeOffset.FromUnixTimeSeconds(v.CreateTime).ToString("o"),
-                AuthorName = v.Author?.Nickname,
-                AuthorId = v.Author?.UniqueId,
-                Views = v.Views,
-                Likes = v.Likes,
-                Comments = v.Comments,
-                Shares = v.Shares
-            }).ToList()
+            Count = allRaws.Count,
+            RawItems = allRaws
         };
     }
 
