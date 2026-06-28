@@ -1,0 +1,1215 @@
+﻿{
+  "$id": "209",
+  "id": "7643069846430813461",
+  "desc": "23/5/2026 Nga bán Vàng mạnh #duynghiem #dautu #vang ",
+  "createTime": 1779540877,
+  "textLanguage": "vi",
+  "textTranslatable": true,
+  "AIGCDescription": "",
+  "CategoryType": 116,
+  "HasPromoteEntry": 0,
+  "IsHDBitrate": false,
+  "isAd": false,
+  "isReviewing": false,
+  "officalItem": false,
+  "originalItem": false,
+  "privateItem": false,
+  "secret": false,
+  "collected": false,
+  "digged": false,
+  "forFriend": false,
+  "shareEnabled": true,
+  "duetEnabled": true,
+  "stitchEnabled": true,
+  "duetDisplay": 0,
+  "stitchDisplay": 0,
+  "itemCommentStatus": 0,
+  "diversificationId": 10093,
+  "backendSourceEventTracking": "",
+  "author": {
+    "$id": "210",
+    "id": "6998500120979932162",
+    "uniqueId": "duynghiem93",
+    "nickname": "Duy Nghiêm - News",
+    "signature": "Kênh tin tức: Kinh tế - Chính Trị - Tài Chính",
+    "secUid": "MS4wLjABAAAACNh0sbiADMZAYWlpXgnMGOW-a8m3Ue7x4oZrvrp0HKpe4iN7cv9lqFGUXQpbVggy",
+    "avatarLarger": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=e898865c&x-expires=1782806400&x-signature=f7rZ%2BJ2r12vuBGUaNTjKIV76O88%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "avatarMedium": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:720:720.jpeg?dr=14579&refresh_token=08fe3ae8&x-expires=1782806400&x-signature=qLJve0mQTW4oE9j1JIWMCGJFBbo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&refresh_token=40102bb8&x-expires=1782806400&x-signature=THuqFnEXkDYxntdR3hErJBiRYSw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "verified": false,
+    "privateAccount": false,
+    "secret": false,
+    "ftc": false,
+    "openFavorite": false,
+    "isADVirtual": false,
+    "isEmbedBanned": false,
+    "relation": 0,
+    "commentSetting": 0,
+    "downloadSetting": 0,
+    "duetSetting": 0,
+    "stitchSetting": 0,
+    "UserStoryStatus": 0,
+    "shortDramaCreator": {
+      "$id": "211"
+    }
+  },
+  "authorStats": {
+    "$id": "212",
+    "diggCount": 485,
+    "followerCount": 184800,
+    "followingCount": 18,
+    "friendCount": 0,
+    "heart": 2300000,
+    "heartCount": 2300000,
+    "videoCount": 77
+  },
+  "authorStatsV2": {
+    "$id": "213",
+    "diggCount": "485",
+    "followerCount": "184800",
+    "followingCount": "18",
+    "friendCount": "0",
+    "heart": "2300000",
+    "heartCount": "2300000",
+    "videoCount": "77"
+  },
+  "music": {
+    "$id": "223",
+    "id": "7643069928081312533",
+    "title": "âm thanh gốc - Duy Nghiêm - News",
+    "authorName": "Duy Nghiêm - News",
+    "playUrl": "https://v16m.tiktokcdn.com/6ff8eceb2ab85780ec0d5f0680c300df/6a422f14/video/tos/alisg/tos-alisg-v-27dcd7/oMAHEoiBATfAP7vAo1NRK69E5AipAEBCVNAnaw/?a=1180&bti=ODszNWYuMDE6&&bt=125&ft=.NpOcInz7ThcLFgGXq8Zmo&mime_type=audio_mpeg&rc=anRuanU5cjl0OzMzODU8NEBpanRuanU5cjl0OzMzODU8NEBycy82MmRzNDVhLS1kMS1zYSNycy82MmRzNDVhLS1kMS1zcw%3D%3D&vvpl=1&l=20260628163628F38BA206C02E78D7DC4B&btag=e00050000",
+    "coverLarge": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=e898865c&x-expires=1782806400&x-signature=f7rZ%2BJ2r12vuBGUaNTjKIV76O88%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "coverMedium": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:720:720.jpeg?dr=14579&refresh_token=08fe3ae8&x-expires=1782806400&x-signature=qLJve0mQTW4oE9j1JIWMCGJFBbo%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "coverThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/ced9df69b90054a2085f7d84ad8ad48f~tplv-tiktokx-cropcenter:100:100.jpeg?dr=14579&refresh_token=40102bb8&x-expires=1782806400&x-signature=THuqFnEXkDYxntdR3hErJBiRYSw%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my",
+    "duration": 136,
+    "shoot_duration": 136,
+    "original": true,
+    "private": false,
+    "isCopyrighted": false,
+    "is_commerce_music": true,
+    "is_unlimited_music": false,
+    "tt2dsp": {
+      "$id": "224"
+    }
+  },
+  "stats": {
+    "$id": "225",
+    "playCount": 69700,
+    "diggCount": 1006,
+    "commentCount": 59,
+    "shareCount": 76,
+    "collectCount": 86
+  },
+  "statsV2": {
+    "$id": "226",
+    "playCount": "69700",
+    "diggCount": "1006",
+    "commentCount": "59",
+    "shareCount": "76",
+    "collectCount": "86",
+    "repostCount": "0"
+  },
+  "video": {
+    "$id": "230",
+    "id": "7643069846430813461",
+    "videoID": "v14044g50000d88q6gnog65old49frp0",
+    "duration": 136,
+    "width": 576,
+    "height": 1024,
+    "ratio": "540p",
+    "definition": "540p",
+    "format": "mp4",
+    "codecType": "h264",
+    "encodedType": "normal",
+    "encodeUserTag": "",
+    "videoQuality": "normal",
+    "VQScore": "68.01",
+    "bitrate": 467450,
+    "size": 7953321,
+    "playAddr": "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/okEAkBEa0FDPRKg3NVKvFfjBfxUgwqIEREQCpk/?a=1988&bti=ODszNWYuMDE6&&bt=456&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZDczZzlnZ2VmNTc1Zzw5aUBpM3U8Z3I5cmp0OzMzODczNEAzYWJgXzNjNjAxMV8uXjM2YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=69af0a414aceec83b87b9e0d94319240&tk=tt_chain_token&btag=e00048000",
+    "downloadAddr": "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oQvJ3ijEBAARiHQqy7EGgaYp04QhI7nVXBiGM/?a=1988&bti=ODszNWYuMDE6&&bt=578&eid=20480&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZmQ2NjtlPDtpOjdlZWc0PEBpM3U8Z3I5cmp0OzMzODczNEAxMTUwL14yXmExMl8uMS8xYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=6f53ddab5e536fe16996ca985f1f1029&tk=tt_chain_token&btag=e00048000",
+    "cover": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-tiktokx-origin.image?dr=14575&x-expires=1782806400&x-signature=W00IsQck%2B%2BV93Of705LzVYS5YDc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my",
+    "originCover": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/okaI04RE5VIXAQBAi7iog4ijaGBRyhq0YvGBh~tplv-tiktokx-origin.image?dr=14575&x-expires=1782806400&x-signature=72fDe9GSOF758tMEFpXlTF9EwjM%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my",
+    "dynamicCover": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-tiktokx-origin.image?dr=14575&x-expires=1782806400&x-signature=W00IsQck%2B%2BV93Of705LzVYS5YDc%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my",
+    "PlayAddrStruct": {
+      "$id": "231",
+      "DataSize": 7953321,
+      "FileCs": "c:0-113421-377e",
+      "FileHash": "d401074be9cf8eb3eb3202a2c6aab4bf",
+      "Height": 1024,
+      "Width": 576,
+      "Uri": "v14044g50000d88q6gnog65old49frp0",
+      "UrlKey": "v14044g50000d88q6gnog65old49frp0_h264_540p_467450",
+      "UrlList": [
+        "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/okEAkBEa0FDPRKg3NVKvFfjBfxUgwqIEREQCpk/?a=1988&bti=ODszNWYuMDE6&&bt=456&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZDczZzlnZ2VmNTc1Zzw5aUBpM3U8Z3I5cmp0OzMzODczNEAzYWJgXzNjNjAxMV8uXjM2YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=69af0a414aceec83b87b9e0d94319240&tk=tt_chain_token&btag=e00048000",
+        "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/okEAkBEa0FDPRKg3NVKvFfjBfxUgwqIEREQCpk/?a=1988&bti=ODszNWYuMDE6&&bt=456&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZDczZzlnZ2VmNTc1Zzw5aUBpM3U8Z3I5cmp0OzMzODczNEAzYWJgXzNjNjAxMV8uXjM2YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=69af0a414aceec83b87b9e0d94319240&tk=tt_chain_token&btag=e00048000",
+        "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=9f66a91db244423c9bfd6db6cde0d46a&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjI4MjllZTE3ZjIwMmY1NmIyNzE1YjhiNzkxZmQ3NjFl&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+      ]
+    },
+    "bitrateInfo": [
+      {
+        "$id": "232",
+        "Bitrate": 467450,
+        "BitrateFPS": 30,
+        "CodecType": "h264",
+        "Format": "mp4",
+        "GearName": "normal_540_0",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 94.416, \"v960\": 97.179, \"v864\": 97.279, \"v720\": 98.048}, \"ori\": {\"v1080\": 82.669, \"v960\": 86.071, \"v864\": 88.154, \"v720\": 91.411}}}",
+        "QualityType": 20,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 229704}, {\\\"time\\\": 2, \\\"offset\\\": 281047}, {\\\"time\\\": 3, \\\"offset\\\": 333877}, {\\\"time\\\": 4, \\\"offset\\\": 380085}, {\\\"time\\\": 5, \\\"offset\\\": 440641}, {\\\"time\\\": 10, \\\"offset\\\": 765175}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 94.416, \\\"v960\\\": 97.179, \\\"v864\\\": 97.279, \\\"v720\\\": 98.048}, \\\"ori\\\": {\\\"v1080\\\": 82.669, \\\"v960\\\": 86.071, \\\"v864\\\": 88.154, \\\"v720\\\": 91.411}}}\",\"ufq\":\"{\\\"enh\\\":83.555,\\\"playback\\\":{\\\"ori\\\":70.807,\\\"srv1\\\":81.531},\\\"src\\\":83.555,\\\"trans\\\":70.807,\\\"version\\\":\\\"v1.1\\\"}\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"25b3faebdda74a9e438e851988a6efcc\",\"dec_info\":\"\",\"gearvqm\":\"\",\"audio_bit_rate\":32044}",
+        "PlayAddr": {
+          "$id": "233",
+          "DataSize": 7953321,
+          "FileCs": "c:0-113421-377e",
+          "FileHash": "d401074be9cf8eb3eb3202a2c6aab4bf",
+          "Height": 1024,
+          "Width": 576,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_h264_540p_467450",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/okEAkBEa0FDPRKg3NVKvFfjBfxUgwqIEREQCpk/?a=1988&bti=ODszNWYuMDE6&&bt=456&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZDczZzlnZ2VmNTc1Zzw5aUBpM3U8Z3I5cmp0OzMzODczNEAzYWJgXzNjNjAxMV8uXjM2YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=69af0a414aceec83b87b9e0d94319240&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/okEAkBEa0FDPRKg3NVKvFfjBfxUgwqIEREQCpk/?a=1988&bti=ODszNWYuMDE6&&bt=456&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=ZDczZzlnZ2VmNTc1Zzw5aUBpM3U8Z3I5cmp0OzMzODczNEAzYWJgXzNjNjAxMV8uXjM2YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=69af0a414aceec83b87b9e0d94319240&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=9f66a91db244423c9bfd6db6cde0d46a&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjI4MjllZTE3ZjIwMmY1NmIyNzE1YjhiNzkxZmQ3NjFl&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      },
+      {
+        "$id": "234",
+        "Bitrate": 397646,
+        "BitrateFPS": 30,
+        "CodecType": "h265_hvc1",
+        "Format": "mp4",
+        "GearName": "adapt_lowest_1080_1",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 99.758, \"v960\": 99.792, \"v864\": 99.807, \"v720\": 99.93}, \"ori\": {\"v1080\": 93.236, \"v960\": 94.02, \"v864\": 94.554, \"v720\": 95.29}}}",
+        "QualityType": 2,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 213737}, {\\\"time\\\": 2, \\\"offset\\\": 248691}, {\\\"time\\\": 3, \\\"offset\\\": 289109}, {\\\"time\\\": 4, \\\"offset\\\": 325337}, {\\\"time\\\": 5, \\\"offset\\\": 373696}, {\\\"time\\\": 10, \\\"offset\\\": 594423}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 99.758, \\\"v960\\\": 99.792, \\\"v864\\\": 99.807, \\\"v720\\\": 99.93}, \\\"ori\\\": {\\\"v1080\\\": 93.236, \\\"v960\\\": 94.02, \\\"v864\\\": 94.554, \\\"v720\\\": 95.29}}}\",\"ufq\":\"\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"fbc25167b8b3cbb5daa27a3ba9df749d\",\"dec_info\":\"\",\"gearvqm\":\"{\\\"v3.0\\\": {\\\"ori\\\": 103.216, \\\"sr20\\\": -1}}\",\"audio_bit_rate\":48065,\"ps_info\":\"{\\\"vps\\\": \\\"AQwC//8BYAAAAwAAAwAAAwAAAwCWAACdzkgS\\\", \\\"sps\\\": \\\"AQMBYAAAAwAAAwAAAwAAAwCWAACgAhyAHgWWdzkySUQs0RJJJJify4d/1+bPl/1+M4gQ5qAgICCAAAADAIAAAA8E\\\", \\\"pps\\\": \\\"AcElPAiQ\\\"}\"}",
+        "PlayAddr": {
+          "$id": "235",
+          "DataSize": 6765749,
+          "FileCs": "c:0-113566-adf4",
+          "FileHash": "71cbc77bde84f09af08dd67e053899f4",
+          "Height": 1920,
+          "Width": 1080,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_bytevc1_1080p_397646",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/o8fRQENVkxCk4Mpj3eBjIwETggF7BqAaEvDU5E/?a=1988&bti=ODszNWYuMDE6&&bt=388&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OTUzNzplNzdlZTxoZmhkO0BpM3U8Z3I5cmp0OzMzODczNEAvMl4yLy1iXjIxMl5fMWEzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=17772f553230e358ed2ff002f615de8e&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/o8fRQENVkxCk4Mpj3eBjIwETggF7BqAaEvDU5E/?a=1988&bti=ODszNWYuMDE6&&bt=388&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OTUzNzplNzdlZTxoZmhkO0BpM3U8Z3I5cmp0OzMzODczNEAvMl4yLy1iXjIxMl5fMWEzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=17772f553230e358ed2ff002f615de8e&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=68da4ebcae594b5ba4e40b2754a05226&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjAyMDBlZjM5MjY4ZDFhNjk3MWNjOTFjMWNlMDRmOGNm&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      },
+      {
+        "$id": "236",
+        "Bitrate": 257116,
+        "BitrateFPS": 30,
+        "CodecType": "h265_hvc1",
+        "Format": "mp4",
+        "GearName": "adapt_lower_720_1",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 98.723, \"v960\": 99.617, \"v864\": 99.741, \"v720\": 99.91}, \"ori\": {\"v1080\": 87.133, \"v960\": 89.72, \"v864\": 91.243, \"v720\": 94.15}}}",
+        "QualityType": 14,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 189563}, {\\\"time\\\": 2, \\\"offset\\\": 208864}, {\\\"time\\\": 3, \\\"offset\\\": 234126}, {\\\"time\\\": 4, \\\"offset\\\": 257220}, {\\\"time\\\": 5, \\\"offset\\\": 287915}, {\\\"time\\\": 10, \\\"offset\\\": 442389}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 98.723, \\\"v960\\\": 99.617, \\\"v864\\\": 99.741, \\\"v720\\\": 99.91}, \\\"ori\\\": {\\\"v1080\\\": 87.133, \\\"v960\\\": 89.72, \\\"v864\\\": 91.243, \\\"v720\\\": 94.15}}}\",\"ufq\":\"\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"81f6e2539b63d7212a59e9aa25787ed2\",\"dec_info\":\"\",\"gearvqm\":\"{\\\"v3.0\\\": {\\\"ori\\\": 96.869, \\\"sr20\\\": 103.025}}\",\"audio_bit_rate\":32043,\"ps_info\":\"{\\\"vps\\\": \\\"AQwC//8BYAAAAwAAAwAAAwAAAwC6AACIJEFgSA==\\\", \\\"sps\\\": \\\"AQMBYAAAAwAAAwAAAwAAAwC6AACgBaIAUBZYgkQXJIkQTNCERERERhH8Thy/v/X82fl/6/mUPkv7/1/Nn5f+v4zhAIOagICAggAAAwACAAADADwQ\\\", \\\"pps\\\": \\\"AcElPA7J\\\"}\"}",
+        "PlayAddr": {
+          "$id": "237",
+          "DataSize": 4374705,
+          "FileCs": "c:0-113573-754c",
+          "FileHash": "12db5328dddd33f94fc900a74008d631",
+          "Height": 1280,
+          "Width": 720,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_bytevc1_720p_257116",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oUIaRhqEivLiG6BEA4iyAEBAjY7qQQ304IXLV/?a=1988&bti=ODszNWYuMDE6&&bt=251&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=Nzc7aTo0ZzlnNDRnM2Y0aEBpM3U8Z3I5cmp0OzMzODczNEA2MDFhMGAzXjMxMzY0M2NiYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=348052e7438c207ea475549e890b5262&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oUIaRhqEivLiG6BEA4iyAEBAjY7qQQ304IXLV/?a=1988&bti=ODszNWYuMDE6&&bt=251&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=Nzc7aTo0ZzlnNDRnM2Y0aEBpM3U8Z3I5cmp0OzMzODczNEA2MDFhMGAzXjMxMzY0M2NiYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=348052e7438c207ea475549e890b5262&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=eef16c709d61416da66dc137df483494&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjEzYzk3NWU2ZmViZjNjZmU2NzZiZGQxMTgwYzFjNzJi&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      },
+      {
+        "$id": "238",
+        "Bitrate": 224102,
+        "BitrateFPS": 30,
+        "CodecType": "h265_hvc1",
+        "Format": "mp4",
+        "GearName": "adapt_540_1",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 97.49, \"v960\": 98.541, \"v864\": 99.236, \"v720\": 99.76}, \"ori\": {\"v1080\": 82.849, \"v960\": 85.897, \"v864\": 87.804, \"v720\": 90.814}}}",
+        "QualityType": 28,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 176423}, {\\\"time\\\": 2, \\\"offset\\\": 192745}, {\\\"time\\\": 3, \\\"offset\\\": 213860}, {\\\"time\\\": 4, \\\"offset\\\": 233354}, {\\\"time\\\": 5, \\\"offset\\\": 258998}, {\\\"time\\\": 10, \\\"offset\\\": 390776}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 97.49, \\\"v960\\\": 98.541, \\\"v864\\\": 99.236, \\\"v720\\\": 99.76}, \\\"ori\\\": {\\\"v1080\\\": 82.849, \\\"v960\\\": 85.897, \\\"v864\\\": 87.804, \\\"v720\\\": 90.814}}}\",\"ufq\":\"\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"81f6e2539b63d7212a59e9aa25787ed2\",\"dec_info\":\"\",\"gearvqm\":\"{\\\"v3.0\\\": {\\\"ori\\\": 92.913, \\\"sr20\\\": 101.379}}\",\"audio_bit_rate\":32043,\"ps_info\":\"{\\\"vps\\\": \\\"AQwC//8BYAAAAwAAAwAAAwAAAwC6AACIJEFgSA==\\\", \\\"sps\\\": \\\"AQMBYAAAAwAAAwAAAwAAAwC6AACgBIIAQBZYgkQXJIkQTNCERERERhH8Thy/v/X82fl/6/mUPkv7/1/Nn5f+v4zhAIOagICAggAAAwACAAADADwQ\\\", \\\"pps\\\": \\\"AcElPA7J\\\"}\"}",
+        "PlayAddr": {
+          "$id": "239",
+          "DataSize": 3812990,
+          "FileCs": "c:0-113573-6336",
+          "FileHash": "c9097a6d28cac35e7528f8a0fb8be2d3",
+          "Height": 1024,
+          "Width": 576,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_bytevc1_540p_224102",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oc8UffjxI0MISGZQfoXaFgiFDIOkRACF0vAoWA/?a=1988&bti=ODszNWYuMDE6&&bt=218&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OGZoMzY0OTNkOTg1Zjo7NEBpM3U8Z3I5cmp0OzMzODczNEA1XjAzXjVhX18xMmE0Li8wYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=94de8c2ac82adfa534184fe1dc48fa55&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oc8UffjxI0MISGZQfoXaFgiFDIOkRACF0vAoWA/?a=1988&bti=ODszNWYuMDE6&&bt=218&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OGZoMzY0OTNkOTg1Zjo7NEBpM3U8Z3I5cmp0OzMzODczNEA1XjAzXjVhX18xMmE0Li8wYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=94de8c2ac82adfa534184fe1dc48fa55&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=3128177cd25546bab0d681a3603eac85&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjNkNjYyNjI5MGNkZmRiZDIwMzQyNTM4NWQ3Y2RiNzFm&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      },
+      {
+        "$id": "240",
+        "Bitrate": 136671,
+        "BitrateFPS": 30,
+        "CodecType": "h265_hvc1",
+        "Format": "mp4",
+        "GearName": "comet_adapt_lower_540_1",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 90.337, \"v960\": 92.253, \"v864\": 94.108, \"v720\": 95.207}, \"ori\": {\"v1080\": 75.972, \"v960\": 79.25, \"v864\": 81.246, \"v720\": 85.553}}}",
+        "QualityType": 23,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 158657}, {\\\"time\\\": 2, \\\"offset\\\": 172654}, {\\\"time\\\": 3, \\\"offset\\\": 186583}, {\\\"time\\\": 4, \\\"offset\\\": 199525}, {\\\"time\\\": 5, \\\"offset\\\": 214191}, {\\\"time\\\": 10, \\\"offset\\\": 302468}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 90.337, \\\"v960\\\": 92.253, \\\"v864\\\": 94.108, \\\"v720\\\": 95.207}, \\\"ori\\\": {\\\"v1080\\\": 75.972, \\\"v960\\\": 79.25, \\\"v864\\\": 81.246, \\\"v720\\\": 85.553}}}\",\"ufq\":\"\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"9e5688af2b440ad86e1839aab9ff039e\",\"dec_info\":\"\",\"gearvqm\":\"\",\"audio_bit_rate\":32043,\"ps_info\":\"{\\\"vps\\\": \\\"AQwC//8BYAAAAwAAAwAAAwAAAwBdAACYk5YEgA==\\\", \\\"sps\\\": \\\"AQMBYAAAAwAAAwAAAwAAAwBdAACgBIIAQB/lmJOXJJkEyQhERGEfEzl+/6/Nny/6/MoeSzv9fNnl/r4zhAIOagICAgE=\\\", \\\"pps\\\": \\\"AcERTSA4kkA=\\\"}\"}",
+        "PlayAddr": {
+          "$id": "241",
+          "DataSize": 2325399,
+          "FileCs": "c:0-113441-08d7",
+          "FileHash": "4c38ed0c2aeebe88a6eb05ef6d059a53",
+          "Height": 1024,
+          "Width": 576,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_bytevc1_540p_136671",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oQ7FGW4Y06AEBiqjNhQiELviVAy4BXaQCSNIA/?a=1988&bti=ODszNWYuMDE6&&bt=133&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=PGQ8PDg6OTtnODQ6PGQ8Z0BpM3U8Z3I5cmp0OzMzODczNEAzLjAxNS0xNmMxLmMyYjNjYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=268d95f592892c18096172e55e3ef5ef&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/oQ7FGW4Y06AEBiqjNhQiELviVAy4BXaQCSNIA/?a=1988&bti=ODszNWYuMDE6&&bt=133&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=PGQ8PDg6OTtnODQ6PGQ8Z0BpM3U8Z3I5cmp0OzMzODczNEAzLjAxNS0xNmMxLmMyYjNjYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=268d95f592892c18096172e55e3ef5ef&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=fd69ea59f71145fd9846078549391a69&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjljM2NiYjJkNWNkZDIxNTllMjg3YjM3MzE0M2ExMjc4&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      },
+      {
+        "$id": "242",
+        "Bitrate": 99025,
+        "BitrateFPS": 30,
+        "CodecType": "h265_hvc1",
+        "Format": "mp4",
+        "GearName": "comet_adapt_lowest_540_1",
+        "MVMAF": "{\"v2.0\": {\"srv1\": {\"v1080\": 86.378, \"v960\": 88.304, \"v864\": 89.939, \"v720\": 91.877}, \"ori\": {\"v1080\": 71.695, \"v960\": 75.491, \"v864\": 77.886, \"v720\": 82.139}}}",
+        "QualityType": 27,
+        "VideoExtra": "{\"PktOffsetMap\":\"[{\\\"time\\\": 1, \\\"offset\\\": 145986}, {\\\"time\\\": 2, \\\"offset\\\": 155408}, {\\\"time\\\": 3, \\\"offset\\\": 166367}, {\\\"time\\\": 4, \\\"offset\\\": 176171}, {\\\"time\\\": 5, \\\"offset\\\": 188792}, {\\\"time\\\": 10, \\\"offset\\\": 258183}]\",\"mvmaf\":\"{\\\"v2.0\\\": {\\\"srv1\\\": {\\\"v1080\\\": 86.378, \\\"v960\\\": 88.304, \\\"v864\\\": 89.939, \\\"v720\\\": 91.877}, \\\"ori\\\": {\\\"v1080\\\": 71.695, \\\"v960\\\": 75.491, \\\"v864\\\": 77.886, \\\"v720\\\": 82.139}}}\",\"ufq\":\"\",\"volume_info_json\":\"\",\"transcode_feature_id\":\"6029ec90f9379dcb7dd52f55e4f71501\",\"dec_info\":\"\",\"gearvqm\":\"\",\"audio_bit_rate\":24037,\"ps_info\":\"{\\\"vps\\\": \\\"AQwC//8BYAAAAwAAAwAAAwAAAwBdAACdzkgS\\\", \\\"sps\\\": \\\"AQMBYAAAAwAAAwAAAwAAAwBdAACgBIIAQBZZ3OTJJRCzREkkkmJ/Lh3/X5s+X/X4ziBDmoCAgIIAAAMAAgAAAwA8EA==\\\", \\\"pps\\\": \\\"AcElPAiQ\\\"}\"}",
+        "PlayAddr": {
+          "$id": "243",
+          "DataSize": 1684863,
+          "FileCs": "c:0-113567-bcd2",
+          "FileHash": "efb47fef36b3c37fad62f6f637c28ba9",
+          "Height": 1024,
+          "Width": 576,
+          "Uri": "v14044g50000d88q6gnog65old49frp0",
+          "UrlKey": "v14044g50000d88q6gnog65old49frp0_bytevc1_540p_99025",
+          "UrlList": [
+            "https://v16-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/o0oEUQCIDELNaBB3gEfGAfgNvFVpDqBEExkRkk/?a=1988&bti=ODszNWYuMDE6&&bt=96&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OTc7OzdmZDlkPGU1OTY0N0BpM3U8Z3I5cmp0OzMzODczNEAtNTEuYy0xNTQxYF5gX140YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=0dd9d8f571d7e2008031e8e74ded0c86&tk=tt_chain_token&btag=e00048000",
+            "https://v19-webapp-prime.tiktok.com/video/tos/alisg/tos-alisg-pve-0037c001/o0oEUQCIDELNaBB3gEfGAfgNvFVpDqBEExkRkk/?a=1988&bti=ODszNWYuMDE6&&bt=96&ft=-Csk_m7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=OTc7OzdmZDlkPGU1OTY0N0BpM3U8Z3I5cmp0OzMzODczNEAtNTEuYy0xNTQxYF5gX140YSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&expire=1782808724&l=20260628163628F38BA206C02E78D7DC4B&ply_type=2&policy=2&signature=0dd9d8f571d7e2008031e8e74ded0c86&tk=tt_chain_token&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&file_id=74a1b3c6a2cb497a864a0cf418488406&is_play_url=1&item_id=7643069846430813461&line=0&ply_type=2&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLmI2ZjVlNWM5OTZmMDc1MTg4MzgxOTRlYmNkY2FiMGI2&tk=tt_chain_token&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      }
+    ],
+    "claInfo": {
+      "$id": "244",
+      "captionsType": 1,
+      "enableAutoCaption": true,
+      "hasOriginalAudio": true,
+      "captionInfos": [
+        {
+          "$id": "245",
+          "claSubtitleID": "7643074384110553872",
+          "subID": "-1891955363",
+          "language": "vie-VN",
+          "languageCode": "",
+          "languageID": "10",
+          "captionFormat": "webvtt",
+          "subtitleType": "1",
+          "translationType": "0",
+          "variant": "whisper_lid",
+          "expire": "1782808724",
+          "isAutoGen": true,
+          "isOriginalCaption": true,
+          "url": "https://v16-webapp.tiktok.com/00e38c7ffdd1d6c38352894d6b0d2e83/6a438094/video/tos/alisg/tos-alisg-pv-0037/216d8cc1b0a9467585790060b5383b53/?a=1988&bti=ODszNWYuMDE6&&bt=1072&ft=-Elcom7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=M3U8Z3I5cmp0OzMzODczNEBpM3U8Z3I5cmp0OzMzODczNEBtYzFpMmRrMzVhLS1kMTFzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&l=20260628163628F38BA206C02E78D7DC4B&btag=e00048000",
+          "urlList": [
+            "https://v16-webapp.tiktok.com/00e38c7ffdd1d6c38352894d6b0d2e83/6a438094/video/tos/alisg/tos-alisg-pv-0037/216d8cc1b0a9467585790060b5383b53/?a=1988&bti=ODszNWYuMDE6&&bt=1072&ft=-Elcom7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=M3U8Z3I5cmp0OzMzODczNEBpM3U8Z3I5cmp0OzMzODczNEBtYzFpMmRrMzVhLS1kMTFzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&l=20260628163628F38BA206C02E78D7DC4B&btag=e00048000",
+            "https://v16-webapp.tiktok.com/00e38c7ffdd1d6c38352894d6b0d2e83/6a438094/video/tos/alisg/tos-alisg-pv-0037/216d8cc1b0a9467585790060b5383b53/?a=1988&bti=ODszNWYuMDE6&&bt=1072&ft=-Elcom7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=M3U8Z3I5cmp0OzMzODczNEBpM3U8Z3I5cmp0OzMzODczNEBtYzFpMmRrMzVhLS1kMTFzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&l=20260628163628F38BA206C02E78D7DC4B&btag=e00048000",
+            "https://www.tiktok.com/aweme/v1/play/?faid=1988&format=webvtt&is_play_url=1&language=vie-VN&line=0&signaturev3=dmlkZW9faWQ7ZmlsZV9pZDtpdGVtX2lkLjkyYTRlMjdhYjUwZTE4NTJjNDQ0NGJhOTRmOTMwODJj&source=SmartPlayerSubtitleRedirect&version=1%3Awhisper_lid&video_id=v14044g50000d88q6gnog65old49frp0"
+          ]
+        }
+      ],
+      "originalLanguageInfo": {
+        "$id": "246",
+        "language": "vie-VN",
+        "languageCode": "",
+        "languageID": "10",
+        "canTranslateRealTimeNoCheck": true
+      }
+    },
+    "subtitleInfos": [
+      {
+        "$id": "247",
+        "Format": "webvtt",
+        "LanguageCodeName": "vie-VN",
+        "LanguageID": "10",
+        "Size": 5313,
+        "Source": "ASR",
+        "Url": "https://v16-webapp.tiktok.com/00e38c7ffdd1d6c38352894d6b0d2e83/6a438094/video/tos/alisg/tos-alisg-pv-0037/216d8cc1b0a9467585790060b5383b53/?a=1988&bti=ODszNWYuMDE6&&bt=1072&ft=-Elcom7nPD12Nk7BZn-UxjIFSY6e3wv25ucAp&mime_type=video_mp4&rc=M3U8Z3I5cmp0OzMzODczNEBpM3U8Z3I5cmp0OzMzODczNEBtYzFpMmRrMzVhLS1kMTFzYSNtYzFpMmRrMzVhLS1kMTFzcw%3D%3D&l=20260628163628F38BA206C02E78D7DC4B&btag=e00048000",
+        "UrlExpire": 1782808724,
+        "Version": "1:whisper_lid"
+      }
+    ],
+    "volumeInfo": {
+      "$id": "248",
+      "Loudness": -16.6,
+      "Peak": 1
+    },
+    "zoomCover": {
+      "$id": "249",
+      "240": "https://p19-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-photomode-zoomcover:240:240.avif?dr=14555&x-expires=1782806400&x-signature=AORxHghkNqWYBSPGiQR2GR133DU%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my&ftpl=1",
+      "480": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-photomode-zoomcover:480:480.avif?dr=14555&x-expires=1782806400&x-signature=d27%2BtrKJ5OMz7k25cajESTawGg4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my&ftpl=1",
+      "720": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-photomode-zoomcover:720:720.avif?dr=14555&x-expires=1782806400&x-signature=rWfyNMT62CCG5%2BUuZHLtzAl6qP4%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my&ftpl=1",
+      "960": "https://p16-common-sign.tiktokcdn.com/tos-alisg-p-0037/oIiwPoNhGAAEBAYAj3AvaPy9l4ZIQEBARji1U~tplv-photomode-zoomcover:960:960.avif?dr=14555&x-expires=1782806400&x-signature=Ww6vTjF%2BfGAoBdBTnUbiCjuKryI%3D&t=4d5b0474&ps=13740610&shp=81f88b70&shcp=43f4a2f9&idc=my&ftpl=1"
+    }
+  },
+  "challenges": [
+    {
+      "$id": "214",
+      "id": "1702088436645890",
+      "title": "duynghiem",
+      "desc": "",
+      "coverLarger": "",
+      "coverMedium": "",
+      "coverThumb": "",
+      "profileLarger": "",
+      "profileMedium": "",
+      "profileThumb": ""
+    },
+    {
+      "$id": "215",
+      "id": "1630329707891714",
+      "title": "dautu",
+      "desc": "",
+      "coverLarger": "",
+      "coverMedium": "",
+      "coverThumb": "",
+      "profileLarger": "",
+      "profileMedium": "",
+      "profileThumb": ""
+    },
+    {
+      "$id": "216",
+      "id": "862075",
+      "title": "vang",
+      "desc": "",
+      "coverLarger": "",
+      "coverMedium": "",
+      "coverThumb": "",
+      "profileLarger": "",
+      "profileMedium": "",
+      "profileThumb": ""
+    }
+  ],
+  "contents": [
+    {
+      "$id": "217",
+      "desc": "23/5/2026 Nga bán Vàng mạnh #duynghiem #dautu #vang ",
+      "textExtra": [
+        {
+          "$id": "218",
+          "awemeId": "",
+          "hashtagName": "duynghiem",
+          "start": 28,
+          "end": 38,
+          "type": 1,
+          "subType": 0,
+          "isCommerce": false
+        },
+        {
+          "$id": "219",
+          "awemeId": "",
+          "hashtagName": "dautu",
+          "start": 39,
+          "end": 45,
+          "type": 1,
+          "subType": 0,
+          "isCommerce": false
+        },
+        {
+          "$id": "220",
+          "awemeId": "",
+          "hashtagName": "vang",
+          "start": 46,
+          "end": 51,
+          "type": 1,
+          "subType": 0,
+          "isCommerce": false
+        }
+      ]
+    }
+  ],
+  "textExtra": [
+    {
+      "$id": "227",
+      "awemeId": "",
+      "hashtagName": "duynghiem",
+      "start": 28,
+      "end": 38,
+      "type": 1,
+      "subType": 0,
+      "isCommerce": false
+    },
+    {
+      "$id": "228",
+      "awemeId": "",
+      "hashtagName": "dautu",
+      "start": 39,
+      "end": 45,
+      "type": 1,
+      "subType": 0,
+      "isCommerce": false
+    },
+    {
+      "$id": "229",
+      "awemeId": "",
+      "hashtagName": "vang",
+      "start": 46,
+      "end": 51,
+      "type": 1,
+      "subType": 0,
+      "isCommerce": false
+    }
+  ],
+  "item_control": {
+    "$id": "222",
+    "can_repost": true
+  },
+  "creatorAIComment": {
+    "$id": "221",
+    "eligibleVideo": false,
+    "hasAITopic": false,
+    "notEligibleReason": 204
+  },
+  "comments": [
+    {
+      "cid": "7643077999638446856",
+      "videoId": "7643069846430813461",
+      "text": "có khả năng năng giảm nữa hok a",
+      "createTime": 1779542782,
+      "diggCount": 5,
+      "replyTotal": 6,
+      "user": {
+        "uniqueId": "trantinhsg",
+        "nickname": "Trần tính",
+        "uid": "6871985244686730245"
+      },
+      "inlineReplies": [
+        {
+          "cid": "7643358875157545746",
+          "text": "Vãi cả tiền khang hiếm",
+          "user": {
+            "uniqueId": "royal.2896",
+            "nickname": "Royal-96",
+            "uid": "6869917046613410818",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/6e50a797a2dc779adbfc138fdc7a3f04~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=fcf7bbf3&x-expires=1782720000&x-signature=KYpmMBHC%2Fwf9eiHWViuVQ1rxG%2BE%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2"
+          }
+        },
+        {
+          "cid": "7643368517101929237",
+          "text": "Doanh nghiệp vàng nó đóng cửa không giám mua vào đấy",
+          "user": {
+            "uniqueId": "binh.an.19911",
+            "nickname": "Binh An 1991",
+            "uid": "7582619871688639506",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/7127a4b3a7df974d9e59181457440cbf~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=bd9cb14a&x-expires=1782720000&x-signature=IwqN0QRZHrqc8Jj4BJ2UPEUAxVg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2"
+          }
+        },
+        {
+          "cid": "7643112005419614997",
+          "text": "\uD83E\uDD23\uD83E\uDD23\uD83E\uDD23 Không đến mức đó đâu",
+          "user": {
+            "uniqueId": "dinhhuann0110",
+            "nickname": "Đình Huấnn",
+            "uid": "6856223035192525826",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/689a5335c1ff0631e3390edb20dd90f5~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=87aff226&x-expires=1782720000&x-signature=pIurBaNudGS1Bse%2FuslF%2BWqsQ00%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2"
+          }
+        },
+        {
+          "cid": "7643085533585752850",
+          "text": "Giảm từ từ bác ạ",
+          "user": {
+            "uniqueId": "manhdungx9",
+            "nickname": "Manh Dung",
+            "uid": "6788800841782592513",
+            "avatarThumb": "https://p19-common-sign.tiktokcdn.com/tos-alisg-avt-0068/be4baf9c10921bcd63907d8c51ab4c97~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=7756763f&x-expires=1782720000&x-signature=fYR05qwAnYXZtUk4M1nIkiXoNSg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2"
+          }
+        },
+        {
+          "cid": "7643105153403618064",
+          "text": "chi số do la USDDIX lên đỉnh là đay của vàng",
+          "user": {
+            "uniqueId": "chauhoang632",
+            "nickname": "chauhoang632",
+            "uid": "7122098935652697115",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-giso/7122099272527478811~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=5cb570ab&x-expires=1782720000&x-signature=vYkpq0e8E7xuOgbvYl6gc243zLk%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my2"
+          }
+        }
+      ]
+    },
+    {
+      "cid": "7643078197793276692",
+      "videoId": "7643069846430813461",
+      "text": "khả năng về đầu 10 òi",
+      "createTime": 1779542827,
+      "diggCount": 3,
+      "replyTotal": 5,
+      "user": {
+        "uniqueId": "quangquangpc",
+        "nickname": "QQ PC TỐC ĐỘ XÉ GIÓ ✅",
+        "uid": "6529501803700486146"
+      },
+      "inlineReplies": [
+        {
+          "cid": "7643295722814063368",
+          "text": "Thế đang 19 giờ về 14,5 r. Chắc chưa giảm đâu nhỉ",
+          "user": {
+            "uniqueId": "vqk82",
+            "nickname": "VQK",
+            "uid": "7491545543065224210",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/12f219f3341e9f1d0d83df10b9025292~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=3e47bc87&x-expires=1782720000&x-signature=aEsmcrhiirQg%2BHClplYmgD8bWu0%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my"
+          }
+        },
+        {
+          "cid": "7643318879629083399",
+          "text": "đợi đấy mà xem. cuối năm bay không kéo.lại được",
+          "user": {
+            "uniqueId": "kt.gp.gng.tcar",
+            "nickname": "KT Gập Gương Tcar",
+            "uid": "7256731803379139590",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4427697ae9a86273efa6237db96d72a6~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=850f264f&x-expires=1782720000&x-signature=4HVh2naH7CcdwwMcrmg27%2B7EZEg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my"
+          }
+        },
+        {
+          "cid": "7643111936930382600",
+          "text": "19,20/2/3 :)))",
+          "user": {
+            "uniqueId": "vqk82",
+            "nickname": "VQK",
+            "uid": "7491545543065224210",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/12f219f3341e9f1d0d83df10b9025292~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=3e47bc87&x-expires=1782720000&x-signature=aEsmcrhiirQg%2BHClplYmgD8bWu0%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my"
+          }
+        },
+        {
+          "cid": "7643112096071648008",
+          "text": "Đợi đấy nó giảm \uD83E\uDD23",
+          "user": {
+            "uniqueId": "kt.gp.gng.tcar",
+            "nickname": "KT Gập Gương Tcar",
+            "uid": "7256731803379139590",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/4427697ae9a86273efa6237db96d72a6~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=850f264f&x-expires=1782720000&x-signature=4HVh2naH7CcdwwMcrmg27%2B7EZEg%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my"
+          }
+        }
+      ]
+    },
+    {
+      "cid": "7643110295930651412",
+      "videoId": "7643069846430813461",
+      "text": "đm lãi xuất ngân hàng tăng như thế thì quan tâm giá vàng làm gì khi vàng đã lên quá mức so với mặt bằng kinh tế chung. giá v cao có mua cũng ko lời nhiều rớt giá thì nhanh ko còn an toàn",
+      "createTime": 1779550303,
+      "diggCount": 2,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "phm.phng.nh.dng_13",
+        "nickname": "Phạm phương ánh dương”_1325",
+        "uid": "7415896504970626068"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643239525389992725",
+      "videoId": "7643069846430813461",
+      "text": "Vậy vàng hạ vn ko bán nua trữ hết ,trồng rau ăn ,thì lại vàng khang hiếm. Thi vàng tăng tiếp hả",
+      "createTime": 1779580421,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "user54284216",
+        "nickname": "Nỗi buồn 0 tên",
+        "uid": "6720028660068402177"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643101063709377296",
+      "videoId": "7643069846430813461",
+      "text": "Nước nào mua nước đó thắng giống như nhà nào nhiều vàng nhà đó giàu ở quê t vậy. Ai bán cứ bán chứ t mỗi tháng mua vài chỉ là vui",
+      "createTime": 1779548166,
+      "diggCount": 1,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "taibaby9999",
+        "nickname": "Tàih❤️q",
+        "uid": "7419157992514012168"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643114147223339793",
+      "videoId": "7643069846430813461",
+      "text": "Sao vẫn có kiểu đợi tài sản ngta giảm thế khôn thật",
+      "createTime": 1779551203,
+      "diggCount": 1,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "tuyenanh2000",
+        "nickname": "Tuyen Anh",
+        "uid": "6542820041679175681"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643274835355796244",
+      "videoId": "7643069846430813461",
+      "text": "Ê tui thấy quý 1 tụi nó bán vàng là bt chứ nhỉ Nga thì ko cần bán vàng để mua dầu những cũng pải cần nhập nguyên liệu để dx công nghiệp mà việc nhập cũng cầm ngoại tệ chứ ai đi lấy vàng đi nhập ? Nên thấy nó bt chứ huống hồ chi ko bán vàng dể duy trì chiến sự thì lấy gì có kinh phí ? Vs nga cũng là nước khai thác vàng rất lớn khai thác ko bán thì khai thác làm gì ?",
+      "createTime": 1779588622,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "user93193717",
+        "nickname": "Thuận Nguyễn",
+        "uid": "6838098654566990850"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643115525366989575",
+      "videoId": "7643069846430813461",
+      "text": "Ae phải hiểu nga nó đang cần tiền để duy trì cuộc chiến chứ chế độ ko còn thì vàng để làm gì",
+      "createTime": 1779551514,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "ngoc14988",
+        "nickname": "Ngọc chi shop",
+        "uid": "6999254207463228418"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643126749701767944",
+      "videoId": "7643069846430813461",
+      "text": "khi nào nó bán cả kho thì hẵng chú ý \uD83D\uDE02",
+      "createTime": 1779554128,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "longnt1112",
+        "nickname": "Long Nguyễn",
+        "uid": "6970845694975362050"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643123275845698324",
+      "videoId": "7643069846430813461",
+      "text": "Mỹ tăng ls nữa là vàng đi bụi quá",
+      "createTime": 1779553327,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "mrright0423",
+        "nickname": "Mr Right",
+        "uid": "6629209155884548098"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643097748485702421",
+      "videoId": "7643069846430813461",
+      "text": "nghe tao. vàng sẽ giảm về 120. tin tao",
+      "createTime": 1779547384,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "ngocduyb",
+        "nickname": "nội thất nhà xinh",
+        "uid": "6915595960554914818"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643111022359053074",
+      "videoId": "7643069846430813461",
+      "text": "\uD83E\uDD23 có biết cái lồng gì đâu mà cứ nói về vàng. Nói như nói lúc lol nào cũng nói nước đôi. 1 là tăng 2 là giảm và nói phải chuẩn tăng giảm lúc nào và thời gian. \uD83E\uDD23",
+      "createTime": 1779550469,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "kt.gp.gng.tcar",
+        "nickname": "KT Gập Gương Tcar",
+        "uid": "7256731803379139590"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643122111355405064",
+      "videoId": "7643069846430813461",
+      "text": "Bác sắp vào lại vàng chưa ạ??",
+      "createTime": 1779553048,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "tuttit.twins",
+        "nickname": "\uD83C\uDF40 Kimmi\uD83C\uDF40",
+        "uid": "6977233775072117761"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643103751197410065",
+      "videoId": "7643069846430813461",
+      "text": "hãy trả vàng về đúng giá trị của nó để kinh tế phát triển",
+      "createTime": 1779548779,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "rosienguyen.vn",
+        "nickname": "Nhung Nguyen\uD83D\uDC78\uD83E\uDD84 Rosie \uD83E\uDEE1",
+        "uid": "6556946137679626241"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643451285060141844",
+      "videoId": "7643069846430813461",
+      "text": "chốt lời bớt .. họ mua nhưbg4 năm 2018",
+      "createTime": 1779629693,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "quanghien852",
+        "nickname": "Quang Hiền",
+        "uid": "6636194216810889217"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643101815882924818",
+      "videoId": "7643069846430813461",
+      "text": "Nga bán đúng đỉnh mua đúng đáy",
+      "createTime": 1779548327,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "fghhjjjjit",
+        "nickname": "Đại Hùng",
+        "uid": "6830248706059797506"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643126514129126164",
+      "videoId": "7643069846430813461",
+      "text": "bán có 40 tấn trong khi nó dự trữ 2300 tấn giống như ông có 2,3 triệu mua gói thuốc 40 ngàn",
+      "createTime": 1779554078,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "useraq9rgwgq85",
+        "nickname": "Sơn Hạ Hỏa",
+        "uid": "7074170625611826203"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643120816284599060",
+      "videoId": "7643069846430813461",
+      "text": "Nga mà bán vàng thì chiến tranh cbi kết thúc",
+      "createTime": 1779552749,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "leminh9090",
+        "nickname": "Lê Minh",
+        "uid": "7022516594351293442"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643095088118072072",
+      "videoId": "7643069846430813461",
+      "text": "Bán thì cũng chỉnh ngắn hạn thôi",
+      "createTime": 1779546764,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "bds_haiphong_mrlam",
+        "nickname": "Trần Văn Lâm",
+        "uid": "6956811551396152321"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643116456905360136",
+      "videoId": "7643069846430813461",
+      "text": "Mõm \uD83D\uDE06\uD83D\uDE06\uD83D\uDE06",
+      "createTime": 1779551731,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "trieu_viet_hoang",
+        "nickname": "Trieu_Viet_Hoang",
+        "uid": "6659305945862471682"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643108556757304071",
+      "videoId": "7643069846430813461",
+      "text": "CHỐT LỜI",
+      "createTime": 1779549891,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "khatvongmoi",
+        "nickname": "KHÁT VỌNG",
+        "uid": "6824102820691330050"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643246738925536020",
+      "videoId": "7643069846430813461",
+      "text": "chắc bán cho Trung",
+      "createTime": 1779582095,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "khoai.lang.nho.86",
+        "nickname": "THUY 86",
+        "uid": "7061091118822442011"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643112871169409813",
+      "videoId": "7643069846430813461",
+      "text": "nga bán, mỹ tăng lãi suất thì là cơ hội để giảm vảng",
+      "createTime": 1779550900,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "usergtg5ot639z",
+        "nickname": "Dương Hùng Cường",
+        "uid": "6727515311388558337"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643114773302772498",
+      "videoId": "7643069846430813461",
+      "text": "Khả năng còn giảm nữa ae ợ",
+      "createTime": 1779551338,
+      "diggCount": 2,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "tieuthubaoanh",
+        "nickname": "Tiểu thư bảo anh",
+        "uid": "6869899526359516162"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643098407423345426",
+      "videoId": "7643069846430813461",
+      "text": "Thông tin hữu ích",
+      "createTime": 1779547533,
+      "diggCount": 2,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "mr.bee92",
+        "nickname": "Hoàng IX",
+        "uid": "6677414746772210689"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643118786854093589",
+      "videoId": "7643069846430813461",
+      "text": "3500 coming soo",
+      "createTime": 1779552279,
+      "diggCount": 2,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "tien_xo",
+        "nickname": "Hoàng Minh Tiến",
+        "uid": "6525383029716107265"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643109391037727509",
+      "videoId": "7643069846430813461",
+      "text": "Đợi xuống 13 r mua\uD83D\uDE02",
+      "createTime": 1779550092,
+      "diggCount": 1,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "fbjnncnmcbm",
+        "nickname": "fbjnncnmcbm",
+        "uid": "6654441047621517314"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643112802585428756",
+      "videoId": "7643069846430813461",
+      "text": "Nga bán thì china gom:)) nga giờ co tuổi đứng ngang hang china à",
+      "createTime": 1779550892,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "trungjay",
+        "nickname": "Trung Jay",
+        "uid": "6726676935885276161"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643074904321262357",
+      "videoId": "7643069846430813461",
+      "text": "Dân mình bắt đáy\uD83D\uDE01\uD83D\uDE01\uD83D\uDE01",
+      "createTime": 1779542060,
+      "diggCount": 4,
+      "replyTotal": 4,
+      "user": {
+        "uniqueId": "khongdoitenduoc.123",
+        "nickname": "Tiệm Bún Mì",
+        "uid": "7412285182358045714"
+      },
+      "inlineReplies": [
+        {
+          "cid": "7643101459257934613",
+          "text": "kế hoạch mua vàng ko bao giờ lỗ",
+          "user": {
+            "uniqueId": "robertkiyosakivn",
+            "nickname": "Fan Robert Kiyosaki",
+            "uid": "6818889530806207490",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/5beebbf3b47b09847930be46396aa7c9~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=6185eaa1&x-expires=1782720000&x-signature=GsTMhcQK8ZN%2FZWFj%2BCKv0YMryWw%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my3"
+          }
+        },
+        {
+          "cid": "7643107957361640213",
+          "text": "Tích sản trên cây",
+          "user": {
+            "uniqueId": "anhduy_official",
+            "nickname": "ROi\uD83D\uDC3A",
+            "uid": "6755271191193879553",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-useast2a-avt-0068-giso/407b1e823154589b7d6fc844ba64162f~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=25e14c6a&x-expires=1782720000&x-signature=MKJvdemm5vDVCLDls84mC%2ByzBjI%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my3"
+          }
+        },
+        {
+          "cid": "7643122009706332929",
+          "text": "Dân mình thấy vàng tăng mạnh mới đi mua, chứ giảm không có mua đâu; lạ đời thế đấy \uD83D\uDE02\uD83D\uDE02\uD83D\uDE02",
+          "user": {
+            "uniqueId": "phuocann11",
+            "nickname": "Phước An",
+            "uid": "7000641372995929089",
+            "avatarThumb": "https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/32851686f7f0cee66d15589bf67f7880~tplv-tiktokx-cropcenter:100:100.jpg?dr=14579&refresh_token=f9edc54b&x-expires=1782720000&x-signature=NNC80O%2BRStuJPm2elJ7waQZBSD8%3D&t=4d5b0474&ps=13740610&shp=30310797&shcp=ff37627b&idc=my3"
+          }
+        }
+      ]
+    },
+    {
+      "cid": "7643116203515069202",
+      "videoId": "7643069846430813461",
+      "text": "Chính tỏ. Nga đang thiếu tiền",
+      "createTime": 1779551673,
+      "diggCount": 0,
+      "replyTotal": 1,
+      "user": {
+        "uniqueId": "kym_am",
+        "nickname": "Kym_Ấm 1986",
+        "uid": "7082060043038262273"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7645897811516392212",
+      "videoId": "7643069846430813461",
+      "text": "Nga đang chiến tranh... ngân sách tất nhiên bị ảnh hưởng. Trung Quốc vẫn gom Vàng vẫn tăng.",
+      "createTime": 1780199337,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "toanbonsai66",
+        "nickname": "Cây cảnh Toanbonsaile",
+        "uid": "7126399355883521026"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643980927286297351",
+      "videoId": "7643069846430813461",
+      "text": "3500 là múc dc",
+      "createTime": 1779753013,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "dinhhszzvmm",
+        "nickname": "hungpham",
+        "uid": "6669736122090848257"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643345721702679303",
+      "videoId": "7643069846430813461",
+      "text": "sập :))",
+      "createTime": 1779605121,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "son.le0436",
+        "nickname": "Son Le",
+        "uid": "7227136487186924545"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643279498554147604",
+      "videoId": "7643069846430813461",
+      "text": "Nga dần hết tiền :)",
+      "createTime": 1779589702,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "leenguyen088",
+        "nickname": "Ninh Nguyễn",
+        "uid": "6959836762109723649"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643250971053474567",
+      "videoId": "7643069846430813461",
+      "text": "Nga hết sạch vàng rồi",
+      "createTime": 1779583060,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "dangnho1995",
+        "nickname": "Đăng Nhỏ 95",
+        "uid": "6929032476552840193"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643127639700636424",
+      "videoId": "7643069846430813461",
+      "text": "Nó mua nhiều có lãi thì phải bán . K bán lấy tiền đâu mà phục vụ chiến tranh .",
+      "createTime": 1779554339,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "mnh.trn4226",
+        "nickname": "Chia Sẻ Có Tâm",
+        "uid": "7410709373154083848"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643122607902868232",
+      "videoId": "7643069846430813461",
+      "text": "thì ko dùng đô nên bán vàng giao dịch là đúng rồi, nga có đầu cơ như mấy bạn đâu, vàng lôi ra sử dụng lúc khó khăn là đúng bài",
+      "createTime": 1779553165,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "121995nam",
+        "nickname": "bố bắp",
+        "uid": "7379678357829551109"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643119367623017224",
+      "videoId": "7643069846430813461",
+      "text": "chứng tỏ nga đang đuối phải bán lúa ăn dần \uD83D\uDE02",
+      "createTime": 1779552412,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "azukauki",
+        "nickname": "Ọc Ọc Ọc",
+        "uid": "7512463780993008647"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643088248255890197",
+      "videoId": "7643069846430813461",
+      "text": "Mấy năm qua Nga bán dầu vs khí để lấy vàng mà, giờ bán chút để tiêu!",
+      "createTime": 1779545165,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "lordlander",
+        "nickname": "Lord Land",
+        "uid": "6567524288512114690"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643115755009901330",
+      "videoId": "7643069846430813461",
+      "text": "đi làm mà ăn đi phét ít thôi",
+      "createTime": 1779551571,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "vtuyn663",
+        "nickname": "tuyen vu",
+        "uid": "7270353436234990594"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643125391587001108",
+      "videoId": "7643069846430813461",
+      "text": "\uD83D\uDE33\uD83D\uDE33\uD83D\uDE33",
+      "createTime": 1779553821,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "dy8uvvzg6kfs",
+        "nickname": "Thợ điện chăn vịt",
+        "uid": "7001704453858493442"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643121823337743125",
+      "videoId": "7643069846430813461",
+      "text": "\uD83E\uDD70",
+      "createTime": 1779552983,
+      "diggCount": 0,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "the.sun876",
+        "nickname": "the sun",
+        "uid": "7285554399384257537"
+      },
+      "inlineReplies": []
+    },
+    {
+      "cid": "7643079991882253074",
+      "videoId": "7643069846430813461",
+      "text": "\uD83D\uDE06\uD83D\uDE06\uD83D\uDE06",
+      "createTime": 1779543243,
+      "diggCount": 3,
+      "replyTotal": 0,
+      "user": {
+        "uniqueId": "ngc.thy9231",
+        "nickname": "Ngọc Thuỷ",
+        "uid": "7031808951117284354"
+      },
+      "inlineReplies": []
+    }
+  ]
+}

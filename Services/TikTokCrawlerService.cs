@@ -485,31 +485,21 @@ public class TikTokCrawlerService : IAsyncDisposable
                     if (createTime >= startTime && !seenIds.Contains(raw.Id))
                     {
                         seenIds.Add(raw.Id);
-                        raw.Transcript = await CrawlLogger.LogItemAsync(target, raw, item);
                         targetCount++;
                         totalCollected++;
 
-                        // FIX B4: Yield each item immediately — no in-memory accumulation.
-                        // yield return new CrawlEvent
-                        // {
-                        //     Type = "item",
-                        //     Target = target,
-                        //     RawItems = [raw]
-                        // };
-
                         yield return new CrawlEvent { Type = "log", Message = $"Đang lấy comment cho video {raw.Id}..." };
-                        await foreach (var commentEvent in ScrapeCommentsStreamAsync(raw.Id!, target, page, cancellationToken))
+                        raw.Comments = new List<TikTokComment>();
+                        await foreach (var commentEvent in ScrapeCommentsStreamAsync(raw.Id!, target, page, raw.Comments, cancellationToken))
                         {
                             yield return commentEvent;
                         }
 
-                        // FIX B5: Queue the file write; background writer drains it async.
+                        // Save the full TikTokRawItem (includes comments) as a single JSON file
                         var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                         var rawDir = Path.Combine("output", "tiktok", "raw");
                         var filePath = Path.Combine(rawDir, $"{timestamp}_{target}_{raw.Id}_raw.json");
-                        var rawJson = JsonSerializer.Serialize(raw.Transcript, JsonOptions);
-
-                        // WriteAsync respects back-pressure from the bounded channel.
+                        var rawJson = JsonSerializer.Serialize(raw, JsonOptions);
                         await _writeChannel.Writer.WriteAsync((filePath, rawJson), cancellationToken);
                     }
                 }
@@ -846,6 +836,7 @@ public class TikTokCrawlerService : IAsyncDisposable
         string videoId,
         string target,
         IPage page,
+        List<TikTokComment>? targetComments,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const int maxPages = 20;
@@ -1023,28 +1014,32 @@ public class TikTokCrawlerService : IAsyncDisposable
                     }
                 }
 
-                // Save comment to file
-                var ts = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                var dir = Path.Combine("output", "tiktok", "comments", videoId);
-                var fp = Path.Combine(dir, $"{ts}_{cid}_comment.json");
-                var rawJson = JsonSerializer.Serialize(new
+                // Populate the in-memory comments list for the parent TikTokRawItem
+                var commentObj = new TikTokComment
                 {
-                    cid,
-                    videoId,
-                    text,
-                    createTime,
-                    diggCount,
-                    replyTotal,
-                    user = new { uniqueId = userName, nickname = userNick, uid = userUid },
-                    inlineReplies
-                }, JsonOptions);
-                await _writeChannel.Writer.WriteAsync((fp, rawJson), cancellationToken);
+                    Cid = cid,
+                    VideoId = videoId,
+                    Text = text,
+                    CreateTime = createTime,
+                    DiggCount = diggCount,
+                    ReplyTotal = replyTotal,
+                    User = userUid != null ? new TikTokCommentUser
+                    {
+                        UniqueId = userName,
+                        Nickname = userNick,
+                        Uid = userUid
+                    } : null,
+                    InlineReplies = inlineReplies.Count > 0
+                        ? inlineReplies.Select(r => JsonSerializer.Deserialize<TikTokInlineReply>(JsonSerializer.Serialize(r, JsonOptions))!).ToList()
+                        : new List<TikTokInlineReply>()
+                };
+                targetComments?.Add(commentObj);
 
                 // If comment has more replies than inline, fetch the rest via reply API
                 if (replyTotal > inlineReplies.Count)
                 {
                     yield return new CrawlEvent { Type = "log", Message = $"Comment {cid} có {replyTotal} replies, đang fetch thêm..." };
-                    await foreach (var replyEvent in FetchRepliesForCommentAsync(page, videoId, target, cid, replyTotal, cancellationToken))
+                    await foreach (var replyEvent in FetchRepliesForCommentAsync(page, videoId, target, cid, replyTotal, commentObj, cancellationToken))
                     {
                         yield return replyEvent;
                     }
@@ -1093,11 +1088,12 @@ public class TikTokCrawlerService : IAsyncDisposable
         string target,
         string commentId,
         int expectedTotal,
+        TikTokComment parentComment,
         [EnumeratorCancellation] CancellationToken cancellationToken)
     {
         const int maxPages = 10;
         var totalFetched = 0;
-        var cursor = 0L;
+        var cursor = 1L;
         var hasMore = true;
         var pageCount = 0;
         var seenReplyCids = new HashSet<string>();
@@ -1125,6 +1121,27 @@ public class TikTokCrawlerService : IAsyncDisposable
             : Rng.NextInt64(1_000_000_000_000_000_000L, long.MaxValue).ToString();
         var isLogin = cookieMap.ContainsKey("sessionid") || cookieMap.ContainsKey("sid_tt");
 
+        // Gather browser context info for reply API params
+        string? userAgent = null, language = null, platform = null, timezone = null;
+        try
+        {
+            userAgent = await page.EvaluateAsync<string>("() => navigator.userAgent");
+            language = await page.EvaluateAsync<string>("() => navigator.language || navigator.userLanguage");
+            platform = await page.EvaluateAsync<string>("() => navigator.platform");
+            timezone = await page.EvaluateAsync<string>("() => Intl.DateTimeFormat().resolvedOptions().timeZone");
+        }
+        catch { /* use defaults */ }
+
+        var region = "VN";
+        var appLang = "en";
+        if (!string.IsNullOrEmpty(timezone))
+        {
+            var tzLower = timezone.ToLower();
+            if (tzLower.Contains("saigon") || tzLower.Contains("bangkok")) { region = "VN"; appLang = "vi-VN"; }
+            else if (tzLower.Contains("tokyo")) { region = "JP"; appLang = "ja-JP"; }
+            else if (tzLower.Contains("shanghai") || tzLower.Contains("hong_kong")) { region = "CN"; appLang = "zh-Hans"; }
+        }
+
         while (hasMore && pageCount < maxPages && totalFetched < expectedTotal)
         {
             if (cancellationToken.IsCancellationRequested) break;
@@ -1132,19 +1149,38 @@ public class TikTokCrawlerService : IAsyncDisposable
 
             var replyParams = new Dictionary<string, string>
             {
+                ["WebIdLastTime"] = "0",
                 ["aid"] = "1988",
+                ["app_language"] = appLang,
                 ["app_name"] = "tiktok_web",
+                ["browser_language"] = language ?? "en-US",
+                ["browser_name"] = "Mozilla",
+                ["browser_online"] = "true",
+                ["browser_platform"] = platform ?? "Win32",
+                ["browser_version"] = userAgent ?? "Mozilla/5.0",
+                ["channel"] = "tiktok_web",
                 ["comment_id"] = commentId,
+                ["cookie_enabled"] = "true",
                 ["count"] = "20",
                 ["cursor"] = cursor.ToString(),
+                ["data_collection_enabled"] = "true",
                 ["device_id"] = deviceId,
                 ["device_platform"] = "web_pc",
+                ["focus_state"] = "true",
+                ["from_page"] = "video",
+                ["history_len"] = "3",
+                ["is_fullscreen"] = "false",
+                ["is_page_visible"] = "true",
                 ["item_id"] = videoId,
                 ["os"] = "windows",
-                ["region"] = "VN",
-                ["priority_region"] = "VN",
-                ["cookie_enabled"] = "true",
-                ["user_is_login"] = isLogin ? "true" : "false"
+                ["priority_region"] = region,
+                ["referer"] = $"https://www.tiktok.com/{target}/video/{videoId}",
+                ["region"] = region,
+                ["screen_height"] = "1080",
+                ["screen_width"] = "1920",
+                ["tz_name"] = timezone ?? "Asia/Saigon",
+                ["user_is_login"] = isLogin ? "true" : "false",
+                ["webcast_language"] = "en"
             };
 
             if (!string.IsNullOrEmpty(msToken)) replyParams["msToken"] = msToken;
@@ -1188,23 +1224,16 @@ public class TikTokCrawlerService : IAsyncDisposable
                 var replyId = r.TryGetProperty("reply_id", out var riEl) ? riEl.GetString() : null;
                 var replyToReplyId = r.TryGetProperty("reply_to_reply_id", out var rriEl) ? rriEl.GetString() : null;
 
-                // Save reply to file
-                var ts = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                var dir = Path.Combine("output", "tiktok", "comments", videoId);
-                var fp = Path.Combine(dir, $"{ts}_{cid}_reply.json");
-                var rawJson = JsonSerializer.Serialize(new
+                // Populate parent comment's InlineReplies with fetched reply data
+                parentComment.InlineReplies ??= new List<TikTokInlineReply>();
+                parentComment.InlineReplies.Add(new TikTokInlineReply
                 {
-                    cid,
-                    videoId,
-                    parentCommentId = commentId,
-                    text,
-                    createTime,
-                    diggCount,
-                    replyId,
-                    replyToReplyId,
-                    user = ExtractCommentUser(r)
-                }, JsonOptions);
-                await _writeChannel.Writer.WriteAsync((fp, rawJson), cancellationToken);
+                    Cid = cid,
+                    Text = text,
+                    User = ExtractCommentUser(r) is { } userObj
+                        ? JsonSerializer.Deserialize<TikTokCommentUser>(JsonSerializer.Serialize(userObj, JsonOptions))
+                        : null
+                });
             }
 
             // Pagination
