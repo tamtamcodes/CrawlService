@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -8,7 +10,7 @@ namespace SocialCrawler.Services;
 
 public class FacebookCrawlerService
 {
-    private static readonly Regex GraphQlFilter = new(@"/(api/graphql|graphql)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+    private static readonly Regex GraphQlFilter = new(@"/(api/graphql|graphql|api\.graphql)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Random Rng = new();
 
     public async IAsyncEnumerable<CrawlEvent> ScrapeAsync(
@@ -23,13 +25,14 @@ public class FacebookCrawlerService
     {
         var cfg = scrollConfig ?? new ScrollConfig();
         var startDt = ParseIsoDate(startDate);
-        var endDt = ParseIsoDate(endDate);
+        var endDt = ParseIsoDate(endDate, isEndDate: true);
         var headless = (Environment.GetEnvironmentVariable("HEADLESS") ?? "true").ToLower() != "false";
 
         using var playwright = await Playwright.CreateAsync();
         var launchOptions = new BrowserTypeLaunchOptions
         {
             Headless = headless,
+            Channel = "msedge",
             Args = new[]
             {
                 "--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu",
@@ -89,16 +92,16 @@ public class FacebookCrawlerService
                 Collected = 0
             };
 
-            var collectedPosts = new List<PostData>();
+            var collectedPosts = new List<(PostData Post, JsonElement RawStory, string PostId)>();
             var seenPostIds = new HashSet<string>();
             var storyBuffer = new System.Collections.Concurrent.ConcurrentQueue<JsonElement>();
 
-            void OnResponse(object? sender, IResponse response)
+            async void OnResponse(object? sender, IResponse response)
             {
                 try
                 {
                     if (!GraphQlFilter.IsMatch(response.Url)) return;
-                    var body = response.TextAsync().GetAwaiter().GetResult();
+                    var body = await response.TextAsync();
                     var stories = FacebookParser.ParseGraphQlResponse(body);
                     foreach (var s in stories) storyBuffer.Enqueue(s);
                     if (stories.Count > 0)
@@ -164,7 +167,6 @@ public class FacebookCrawlerService
 
             for (var scrollI = 1; scrollI <= cfg.MaxScrolls; scrollI++)
             {
-                if (collectedPosts.Count >= maxPosts) break;
                 if (cancellationToken.IsCancellationRequested)
                 {
                     yield return new CrawlEvent { Type = "log", Message = "🚫 Tiến trình đã bị hủy giữa chừng." };
@@ -225,8 +227,8 @@ public class FacebookCrawlerService
                     }
 
                     DateTime? publishedDt = null;
-                    if (!string.IsNullOrEmpty(post.PublishedAt))
-                        DateTime.TryParse(post.PublishedAt, out var pdt);
+                    if (!string.IsNullOrEmpty(post.PublishedAt) && DateTime.TryParse(post.PublishedAt, out var pdt))
+                        publishedDt = pdt;
 
                     if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value) continue;
                     if (startDt.HasValue && publishedDt.HasValue && publishedDt.Value < startDt.Value)
@@ -237,15 +239,7 @@ public class FacebookCrawlerService
                     }
 
                     post.Platform = "facebook";
-                    collectedPosts.Add(post);
-
-                    // Log raw JSON and parsed post
-                    // await CrawlLogger.LogRawJsonAsync("facebook", target, postId, storyJson);
-
-                    // Log transcript if available
-                    // await CrawlLogger.LogTranscriptAsync("facebook", target, postId, storyJson);
-
-                    // await CrawlLogger.LogParsedPostAsync("facebook", target, post);
+                    collectedPosts.Add((post, storyJson, postId));
 
                     Console.WriteLine($"[Facebook Crawl] Found: {post.PostUrl} | Likes: {post.Likes} | Comments: {post.Comments} | Shares: {post.Shares}");
                     yield return new CrawlEvent
@@ -253,12 +247,6 @@ public class FacebookCrawlerService
                         Type = "log",
                         Message = $"👉 Found Post: {post.PostUrl} (Likes: {post.Likes}, Comments: {post.Comments}, Shares: {post.Shares}) | Caption: {post.Caption[..Math.Min(40, post.Caption.Length)]}..."
                     };
-
-                    if (collectedPosts.Count >= maxPosts)
-                    {
-                        stopCrawling = true;
-                        break;
-                    }
                 }
 
                 if (stopCrawling) break;
@@ -294,7 +282,29 @@ public class FacebookCrawlerService
 
             page.Response -= OnResponse;
 
-            if (collectedPosts.Count == 0)
+            // Sắp xếp bài viết theo thời gian giảm dần, lấy top maxPosts
+            var topPosts = collectedPosts
+                .OrderByDescending(p => p.Post.PublishedAt)
+                .Take(maxPosts)
+                .ToList();
+
+            if (topPosts.Count < collectedPosts.Count)
+            {
+                var skipped = collectedPosts.Count - topPosts.Count;
+                Console.WriteLine($"[Facebook Crawl] Đã thu thập {collectedPosts.Count} bài, giữ lại {topPosts.Count} bài mới nhất (bỏ {skipped} bài cũ hơn)");
+            }
+
+            // Chỉ log raw/parsed cho top posts được giữ lại
+            foreach (var (post, rawStory, postId) in topPosts)
+            {
+                await CrawlLogger.LogRawJsonAsync("facebook", target, postId, rawStory);
+                await CrawlLogger.LogTranscriptAsync("facebook", target, postId, rawStory);
+                await CrawlLogger.LogParsedPostAsync("facebook", target, post, postId);
+            }
+
+            var resultPosts = topPosts.Select(t => t.Post).ToList();
+
+            if (resultPosts.Count == 0)
             {
                 yield return new CrawlEvent
                 {
@@ -308,8 +318,8 @@ public class FacebookCrawlerService
             {
                 Type = "done",
                 Target = target,
-                Count = collectedPosts.Count,
-                Videos = collectedPosts
+                Count = resultPosts.Count,
+                Videos = resultPosts
             };
         }
     }
@@ -344,10 +354,28 @@ public class FacebookCrawlerService
         catch { }
     }
 
-    private static DateTime? ParseIsoDate(string? dateStr)
+    private static DateTime? ParseIsoDate(string? dateStr, bool isEndDate = false)
     {
         if (string.IsNullOrEmpty(dateStr)) return null;
-        try { return DateTime.Parse(dateStr.Replace("Z", "+00:00")).ToUniversalTime(); }
+        try
+        {
+            DateTime result;
+            // Date-only string like "2026-06-29" — treat as UTC midnight, NOT local time
+            if (DateOnly.TryParse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            {
+                result = DateTime.Parse(dateStr, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+            }
+            else
+            {
+                result = DateTime.Parse(dateStr.Replace("Z", "+00:00"), CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal);
+            }
+
+            // end_date should be inclusive of the entire day
+            if (isEndDate)
+                result = result.AddDays(1);
+
+            return result;
+        }
         catch { return null; }
     }
 }

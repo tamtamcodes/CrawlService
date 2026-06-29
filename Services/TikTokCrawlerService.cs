@@ -79,7 +79,24 @@ public sealed class PlaywrightBrowserPool : IAsyncDisposable
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = _headless,
-                Args = ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"]
+                Args =
+                [
+                    "--no-sandbox",
+                    "--disable-setuid-sandbox",
+                    "--disable-dev-shm-usage",
+                    // Stealth flags to reduce captcha/headless detection
+                    "--disable-blink-features=AutomationControlled",
+                    "--disable-component-update",
+                    "--no-default-browser-check",
+                    "--disable-client-side-phishing-detection",
+                    "--disable-features=Translate,ChromeWhatsNew,InterestFeedContentSuggestions",
+                    "--ignore-certificate-errors",
+                    "--disable-sync",
+                    "--metrics-recording-only",
+                    "--no-first-run",
+                    "--window-size=1920,1080",
+                    "--start-maximized"
+                ]
             });
             return _browser;
         }
@@ -272,6 +289,41 @@ public class TikTokCrawlerService : IAsyncDisposable
         }
         """;
 
+    // Aggressively removes captcha modal overlays + captcha containers from DOM.
+    // TikTok captcha is a front-end modal — removing its elements lets the page
+    // function normally underneath.
+    private const string JsDismissCaptcha = """
+        () => {
+            // Selectors for TikTok captcha modal/overlay containers
+            const selectors = [
+                '#captcha-container',
+                '.captcha-container',
+                '.secsdk-captcha-container',
+                'div[class*="captcha"]',
+                'div[id*="captcha"]',
+                'div[class*="secsdk"]',
+                'iframe[src*="captcha"]',
+                'div[class*="modal-mask"]',
+                'div[class*="ModalContainer"]'
+            ];
+            let removed = 0;
+            selectors.forEach(sel => {
+                document.querySelectorAll(sel).forEach(el => {
+                    // Remove overlay/modal elements to restore page functionality
+                    if (el && el.parentNode) {
+                        el.remove();
+                        removed++;
+                    }
+                });
+            });
+            // Also remove body overflow hidden that captcha modals set
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.documentElement.style.overflow = '';
+            return removed;
+        }
+        """;
+
     public async IAsyncEnumerable<CrawlEvent> ScrapeStreamAsync(
         List<string> targets,
         string? startDateStr,
@@ -443,8 +495,13 @@ public class TikTokCrawlerService : IAsyncDisposable
                     captchaCheckState = await page.EvaluateAsync<string?>(JsCheckCaptcha);
                     if (captchaCheckState == "CAPTCHA")
                     {
-                        yield return new CrawlEvent { Type = "error", Message = "CAPTCHA_DETECTED: Phát hiện Captcha trong quá trình tải danh sách!" };
-                        goto TargetDone;
+                        var dismissed = await TryDismissCaptchaAsync(page);
+                        if (!dismissed)
+                        {
+                            yield return new CrawlEvent { Type = "error", Message = "CAPTCHA_DETECTED: Phát hiện Captcha trong quá trình tải danh sách!" };
+                            goto TargetDone;
+                        }
+                        yield return new CrawlEvent { Type = "log", Message = "Captcha đã được dismiss, tiếp tục..." };
                     }
                     if (captchaCheckState == "LOGIN")
                     {
@@ -555,6 +612,33 @@ public class TikTokCrawlerService : IAsyncDisposable
         };
     }
 
+    // Try to dismiss captcha overlay by removing its DOM elements, then re-check.
+    // Returns true if captcha was resolved (no longer detected).
+    private static async Task<bool> TryDismissCaptchaAsync(IPage page)
+    {
+        try
+        {
+            var removed = await page.EvaluateAsync<int>(JsDismissCaptcha);
+            if (removed > 0)
+            {
+                Console.WriteLine($"[Captcha] Đã xoá {removed} phần tử captcha khỏi DOM.");
+                await Task.Delay(2000); // wait for any re-render
+                var stillThere = await page.EvaluateAsync<string?>(JsCheckCaptcha);
+                if (stillThere == null)
+                {
+                    Console.WriteLine("[Captcha] Captcha đã được dismiss thành công!");
+                    return true;
+                }
+                Console.WriteLine("[Captcha] Captcha vẫn còn sau khi dismiss, thử lại...");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[Captcha] Lỗi khi dismiss captcha: {ex.Message}");
+        }
+        return false;
+    }
+
     // FIX B3: cancellationToken threaded through every Playwright call.
     private static async Task<string?> ExtractSecUidAsync(IPage page, string target, CancellationToken ct)
     {
@@ -578,8 +662,20 @@ public class TikTokCrawlerService : IAsyncDisposable
         catch (OperationCanceledException) { ct.ThrowIfCancellationRequested(); }
         catch { /* timeout is acceptable */ }
 
+        // Check + try to dismiss captcha (TikTok captcha is a dismissable FE modal)
         var state = await page.EvaluateAsync<string?>(JsCheckCaptcha);
-        if (state == "CAPTCHA") throw new Exception("CAPTCHA_DETECTED");
+        if (state == "CAPTCHA")
+        {
+            Console.WriteLine("[Captcha] Phát hiện captcha, đang thử dismiss...");
+            if (await TryDismissCaptchaAsync(page))
+            {
+                Console.WriteLine("[Captcha] Đã dismiss captcha, tiếp tục...");
+            }
+            else
+            {
+                throw new Exception("CAPTCHA_DETECTED");
+            }
+        }
         if (state == "LOGIN") throw new Exception("LOGIN_REQUIRED");
 
         await SimulateHumanInteraction(page);

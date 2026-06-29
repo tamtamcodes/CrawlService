@@ -23,7 +23,7 @@ public class CrawlRequest
     [JsonPropertyName("cookies")]
     public JsonElement? Cookies { get; set; }
 
-    [JsonPropertyName("facebookMaxPosts")]
+    [JsonPropertyName("facebook_max_posts")]
     public int FacebookMaxPosts { get; set; } = 50;
 
     [JsonPropertyName("stop_urls")]

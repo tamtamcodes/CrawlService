@@ -1,11 +1,12 @@
 @baseUrl = http://localhost:5000
 
 ### TikTok Crawl - Single Target
+# https://www.tiktok.com/@erone645
 POST {{baseUrl}}/crawl/tiktok
 Content-Type: application/json
 
 {
-  "target": "@duynghiem93",
+  "target": "@erone645",
   "cookies": [
     { "name": "sid_ucp_v1", "value": "1.0.1-KDNkNTcxOGYzZjllZjNjMjRmYjUxZjdiZjFlMWU4OTRkOTg5YzdmYjkKIQiSiKWSjN_jlWoQi_Su0QYYswsgDDCZnq7RBjgIQBJIBBADGgJteSIgYjVhODdiYTA2MTU1NDlhYzQ5ZGVmNTcxM2ZlNDYwZjgyTgogpzgyWGoffFNGDAJfKf_Ofr5xv66r7-NUZdWb3D6R39YSIAm7pnesfA_bz4QQEjjeE1TwJKcRQ83RGRzhJbUWN9e3GAEiBnRpa3Rvaw", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.980214 },
     { "name": "tt-target-idc-sign", "value": "a0biCG0mTLNCfBCg-UhxRz3UvzdUFNo1YFlf8LLOrEbuaIRaCU9vp1Jv2mmwp9bN2NI7yGic0aBbGQKoxCEh4dPIz7hjf4-jQgxHjQEAk0lpA7oRbq2VjOehzCao7Qsrq1zcq06jCUTxhJu4zlSSTxRtKfCYIqOtXRct64qez0BMpY6gl8KMZ6sye-hTslJbYns720wm5uKZW2eHXP1ahEXk9KNal-7pX0lKBvn-VYt-2LpCFBUCY4U8z0xECz0d9D2Fq0o0m2BQWGIcI27WaRoK78U85bQ5YPGJAkl66QopaaERZUG6aQfj-xMv4t7fCeDppCyBx1_T4fHvCGLqfEpEclzWLEF6Dp-DQ0pcyY75YUQTM3wAY3PvSQ1hHpfFBeuek2iSkWBQsfJ_1qGR3zbf1zc6y4tDnz75EfDO7OjFQ8MbMBu4-hUMc0Cvko_o_kW2x_bKYobkwvQIgCZPC2F-US7MoslO4iSX0BCHL84T8959trLfNrlSH6Eh4lF1", "domain": ".tiktok.com", "path": "/", "secure": false, "httpOnly": true, "expirationDate": 1813888983.217532 },
@@ -56,8 +57,8 @@ Content-Type: application/json
     { "name": "uid_tt", "value": "9c62586e5eac5c9a4545a012e36d556a17a60c8d6b01ae8d5131feb7d2970390", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.979971 },
     { "name": "passport_csrf_token_default", "value": "9866e7971a9f20a743b993924645590c", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1786420219.176138 }
   ],
-  "start_date": "2026-05-01",
-  "end_date": "2026-06-26",
+  "start_date": "2026-06-27",
+  "end_date": "2026-06-28",
   "period": "week"
 }
 

@@ -23,18 +23,41 @@ public static class FacebookParser
 
             try
             {
-                var metaStory = story
-                    .Nav("comet_sections")?.Nav("context_layout")?.Nav("story")
-                    ?.Nav("comet_sections")?.NavArray("metadata", 0)?.Nav("story");
-
-                if (metaStory.HasValue)
+                // creation_time có sẵn ở root level — ưu tiên đọc từ đây
+                if (story.TryGetProperty("creation_time", out var rootCt) && rootCt.TryGetInt64(out var rootTs))
                 {
-                    postUrl = GetString(metaStory.Value, "url") ?? "";
-                    if (metaStory.Value.TryGetProperty("creation_time", out var ct))
+                    createdDate = DateTimeOffset.FromUnixTimeSeconds(rootTs).UtcDateTime;
+                }
+
+                // URL: tìm LongerTimestampStrategy trong metadata array (index không cố định!)
+                var metaArr = story
+                    .Nav("comet_sections")?.Nav("context_layout")?.Nav("story")
+                    ?.Nav("comet_sections")?.GetProp("metadata");
+                if (metaArr.HasValue && metaArr.Value.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in metaArr.Value.EnumerateArray())
                     {
-                        if (ct.TryGetInt64(out var ts))
-                            createdDate = DateTimeOffset.FromUnixTimeSeconds(ts).UtcDateTime;
+                        var tn = GetString(item, "__typename");
+                        if (tn == "CometFeedStoryLongerTimestampStrategy")
+                        {
+                            var tsStory = item.Nav("story");
+                            if (tsStory.HasValue)
+                            {
+                                postUrl = GetString(tsStory.Value, "url") ?? "";
+                                if (createdDate == null && tsStory.Value.TryGetProperty("creation_time", out var ct) && ct.TryGetInt64(out var ts))
+                                    createdDate = DateTimeOffset.FromUnixTimeSeconds(ts).UtcDateTime;
+                            }
+                            break;
+                        }
                     }
+                }
+
+                // URL fallback: từ message story
+                if (string.IsNullOrEmpty(postUrl))
+                {
+                    var msgUrl = story.Nav("comet_sections")?.Nav("content")?.Nav("story")
+                        ?.Nav("comet_sections")?.Nav("message")?.Nav("story")?.GetProp("url");
+                    if (msgUrl.HasValue) postUrl = msgUrl.Value.GetString() ?? "";
                 }
             }
             catch { }
