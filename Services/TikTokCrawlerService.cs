@@ -76,28 +76,22 @@ public sealed class PlaywrightBrowserPool : IAsyncDisposable
 
             _playwright?.Dispose();
             _playwright = await Playwright.CreateAsync();
-            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            var extraArgs = new[]
             {
-                Headless = true,
-                Args =
-                [
-                    "--no-sandbox",
-                    "--disable-setuid-sandbox",
-                    "--disable-dev-shm-usage",
-                    // Stealth flags to reduce captcha/headless detection
-                    "--disable-blink-features=AutomationControlled",
-                    "--disable-component-update",
-                    "--no-default-browser-check",
-                    "--disable-client-side-phishing-detection",
-                    "--disable-features=Translate,ChromeWhatsNew,InterestFeedContentSuggestions",
-                    "--ignore-certificate-errors",
-                    "--disable-sync",
-                    "--metrics-recording-only",
-                    "--no-first-run",
-                    "--window-size=1920,1080",
-                    "--start-maximized"
-                ]
-            });
+                // Stealth flags to reduce captcha/headless detection
+                "--disable-blink-features=AutomationControlled",
+                "--disable-component-update",
+                "--no-default-browser-check",
+                "--disable-client-side-phishing-detection",
+                "--disable-features=Translate,ChromeWhatsNew,InterestFeedContentSuggestions",
+                "--ignore-certificate-errors",
+                "--disable-sync",
+                "--metrics-recording-only",
+                "--no-first-run",
+                "--window-size=1920,1080",
+                "--start-maximized"
+            };
+            _browser = await BrowserLauncher.LaunchAsync(_playwright, headless: true, extraArgs: extraArgs);
             return _browser;
         }
         finally

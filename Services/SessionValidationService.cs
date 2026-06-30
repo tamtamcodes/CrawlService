@@ -12,11 +12,7 @@ public class SessionValidationService
 
         var headless = (Environment.GetEnvironmentVariable("HEADLESS") ?? "false").ToLower() != "false";
         using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = headless,
-            Args = new[] { "--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu", "--disable-dev-shm-usage" }
-        });
+        await using var browser = await BrowserLauncher.LaunchAsync(playwright, headless: headless);
         await using var context = await browser.NewContextAsync();
 
         if (cookies.Count > 0)
@@ -69,11 +65,7 @@ public class SessionValidationService
         Console.WriteLine($"[server] Launching browser (headless={headless}) for Facebook session validation...");
 
         using var playwright = await Playwright.CreateAsync();
-        await using var browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
-        {
-            Headless = headless,
-            Args = new[] { "--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu", "--disable-dev-shm-usage" }
-        });
+        await using var browser = await BrowserLauncher.LaunchAsync(playwright, headless: headless);
         await using var context = await browser.NewContextAsync();
 
         if (cookies.Count > 0)

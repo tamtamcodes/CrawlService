@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: social-crawler
+    env: docker
+    plan: starter # Starter plan is recommended because CloakBrowser/Chromium requires at least 512MB-1GB of RAM to prevent OOM
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: HEADLESS
+        value: "true"
+      - key: PUBLIC_BASE_URL
+        sync: false # Set this to the public URL of the service on Render (e.g. https://social-crawler.onrender.com)

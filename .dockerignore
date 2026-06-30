@@ -1,0 +1,12 @@
+.git/
+.github/
+.vscode/
+bin/
+obj/
+output/
+**/*.user
+**/*.vspscc
+*.http
+*.json
+!facebook_cookie.json
+!tiktok_cookie.json

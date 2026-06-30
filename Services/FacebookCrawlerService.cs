@@ -32,23 +32,17 @@ public class FacebookCrawlerService
         var headless = (Environment.GetEnvironmentVariable("HEADLESS") ?? "true").ToLower() != "false";
 
         using var playwright = await Playwright.CreateAsync();
-        var launchOptions = new BrowserTypeLaunchOptions
+        var extraArgs = new[]
         {
-            Headless = true,
-            Channel = "msedge",
-            Args = new[]
-            {
-                "--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu",
-                "--disable-dev-shm-usage", "--disable-extensions", "--disable-logging",
-                "--log-level=3", "--js-flags=--max-old-space-size=512",
-                "--disable-background-networking", "--disable-renderer-backgrounding",
-                "--disable-backgrounding-occluded-windows", "--disable-ipc-flooding-protection",
-                "--disable-background-timer-throttling", "--disable-software-rasterizer",
-                "--disable-features=TranslateUI,BlinkGenPropertyTrees"
-            }
+            "--disable-extensions", "--disable-logging",
+            "--log-level=3", "--js-flags=--max-old-space-size=512",
+            "--disable-background-networking", "--disable-renderer-backgrounding",
+            "--disable-backgrounding-occluded-windows", "--disable-ipc-flooding-protection",
+            "--disable-background-timer-throttling", "--disable-software-rasterizer",
+            "--disable-features=TranslateUI,BlinkGenPropertyTrees"
         };
 
-        await using var browser = await playwright.Chromium.LaunchAsync(launchOptions);
+        await using var browser = await BrowserLauncher.LaunchAsync(playwright, headless: headless, channel: "msedge", extraArgs: extraArgs);
         var contextOptions = new BrowserNewContextOptions();
         await using var context = await browser.NewContextAsync(contextOptions);
 
