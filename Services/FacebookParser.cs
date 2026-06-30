@@ -115,36 +115,7 @@ public static class FacebookParser
 
             var text = ExtractText(story);
 
-            int likeCount = 0, commentCount = 0, shareCount = 0;
-
-            try
-            {
-                var renderers = story.Nav("comet_sections")?.Nav("feedback")?.Nav("story")
-                    ?.Nav("story_ufi_container")?.Nav("story")?.Nav("feedback_context")
-                    ?.Nav("feedback_target_with_context")?.Nav("comet_ufi_summary_and_actions_renderer")
-                    ?.Nav("feedback")?.GetProp("adaptive_ufi_action_renderers");
-
-                if (renderers.HasValue && renderers.Value.ValueKind == JsonValueKind.Array)
-                {
-                    var arr = renderers.Value;
-                    if (arr.GetArrayLength() > 0)
-                    {
-                        if (arr[0].Nav("feedback")?.Nav("reaction_count")?.GetProp("count") is { } lc)
-                            likeCount = TryGetInt(lc);
-                    }
-                    if (arr.GetArrayLength() > 1)
-                    {
-                        if (arr[1].Nav("feedback")?.Nav("comment_rendering_instance")?.Nav("comments")?.GetProp("total_count") is { } cc)
-                            commentCount = TryGetInt(cc);
-                    }
-                    if (arr.GetArrayLength() > 2)
-                    {
-                        if (arr[2].Nav("feedback")?.Nav("share_count")?.GetProp("count") is { } sc)
-                            shareCount = TryGetInt(sc);
-                    }
-                }
-            }
-            catch { }
+            var (likeCount, commentCount, shareCount) = ExtractEngagementCounts(story);
 
             var images = new List<string>();
             var videos = new List<string>();
@@ -307,6 +278,110 @@ public static class FacebookParser
         catch { }
 
         return "";
+    }
+
+    private static (int Likes, int Comments, int Shares) ExtractEngagementCounts(JsonElement story)
+    {
+        int likeCount = 0, commentCount = 0, shareCount = 0;
+
+        try
+        {
+            foreach (var feedback in EnumerateUfiFeedbackSummaries(story))
+            {
+                ApplyEngagementCounts(feedback, ref likeCount, ref commentCount, ref shareCount);
+                if (likeCount > 0 || commentCount > 0 || shareCount > 0)
+                    return (likeCount, commentCount, shareCount);
+            }
+
+            var renderers = story.Nav("comet_sections")?.Nav("feedback")?.Nav("story")
+                ?.Nav("story_ufi_container")?.Nav("story")?.Nav("feedback_context")
+                ?.Nav("feedback_target_with_context")?.Nav("comet_ufi_summary_and_actions_renderer")
+                ?.Nav("feedback")?.GetProp("adaptive_ufi_action_renderers");
+
+            if (renderers.HasValue && renderers.Value.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var item in renderers.Value.EnumerateArray())
+                {
+                    var feedback = item.GetPropOpt("feedback");
+                    if (feedback.HasValue)
+                        ApplyEngagementCounts(feedback.Value, ref likeCount, ref commentCount, ref shareCount);
+                }
+            }
+        }
+        catch { }
+
+        return (likeCount, commentCount, shareCount);
+    }
+
+    private static IEnumerable<JsonElement> EnumerateUfiFeedbackSummaries(JsonElement story)
+    {
+        var direct = story.Nav("comet_sections")?.Nav("feedback")?.Nav("story")
+            ?.Nav("story_ufi_container")?.Nav("story")?.Nav("feedback_context")
+            ?.Nav("feedback_target_with_context")?.Nav("comet_ufi_summary_and_actions_renderer")
+            ?.Nav("feedback");
+        if (direct.HasValue) yield return direct.Value;
+
+        foreach (var feedback in WalkUfiFeedbackSummaries(story))
+            yield return feedback;
+    }
+
+    private static IEnumerable<JsonElement> WalkUfiFeedbackSummaries(JsonElement el)
+    {
+        if (el.ValueKind == JsonValueKind.Object)
+        {
+            if (el.TryGetProperty("comet_ufi_summary_and_actions_renderer", out var renderer))
+            {
+                var feedback = renderer.GetPropOpt("feedback");
+                if (feedback.HasValue) yield return feedback.Value;
+            }
+
+            foreach (var prop in el.EnumerateObject())
+            {
+                if (prop.Value.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+                {
+                    foreach (var feedback in WalkUfiFeedbackSummaries(prop.Value))
+                        yield return feedback;
+                }
+            }
+        }
+        else if (el.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in el.EnumerateArray())
+            {
+                if (item.ValueKind is JsonValueKind.Object or JsonValueKind.Array)
+                {
+                    foreach (var feedback in WalkUfiFeedbackSummaries(item))
+                        yield return feedback;
+                }
+            }
+        }
+    }
+
+    private static void ApplyEngagementCounts(JsonElement feedback, ref int likeCount, ref int commentCount, ref int shareCount)
+    {
+        if (likeCount == 0)
+        {
+            var reaction = feedback.Nav("reaction_count")?.GetProp("count") ?? feedback.GetPropOpt("reaction_count");
+            if (reaction.HasValue) likeCount = TryGetInt(reaction.Value);
+            if (likeCount == 0 && feedback.TryGetProperty("i18n_reaction_count", out var i18nReaction))
+                likeCount = TryGetInt(i18nReaction);
+        }
+
+        if (commentCount == 0)
+        {
+            var comments = feedback.Nav("comment_rendering_instance")?.Nav("comments")?.GetProp("total_count")
+                ?? feedback.Nav("comments_count_summary_renderer")?.Nav("feedback")
+                    ?.Nav("comment_rendering_instance")?.Nav("comments")?.GetProp("total_count");
+            if (comments.HasValue) commentCount = TryGetInt(comments.Value);
+        }
+
+        if (shareCount == 0)
+        {
+            var shares = feedback.Nav("share_count")?.GetProp("count") ?? feedback.GetPropOpt("share_count");
+            if (shares.HasValue) shareCount = TryGetInt(shares.Value);
+            if (shareCount == 0 && feedback.TryGetProperty("i18n_share_count", out var i18nShare))
+                shareCount = TryGetInt(i18nShare);
+        }
     }
 
     private static void ParseAttachments(JsonElement attachments, List<string> images, List<string> videos)
