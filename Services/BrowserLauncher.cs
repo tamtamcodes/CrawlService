@@ -15,10 +15,16 @@ public static class BrowserLauncher
         if (!string.IsNullOrWhiteSpace(customPath))
         {
             options.ExecutablePath = customPath;
+            Console.WriteLine($"[BrowserLauncher] Dùng custom browser: {customPath} (headless={headless})");
         }
         else if (!string.IsNullOrWhiteSpace(channel))
         {
             options.Channel = channel;
+            Console.WriteLine($"[BrowserLauncher] Dùng channel browser: {channel} (headless={headless})");
+        }
+        else
+        {
+            Console.WriteLine($"[BrowserLauncher] Dùng Playwright mặc định Chromium (headless={headless})");
         }
 
         var defaultArgs = new List<string>
@@ -39,3 +45,4 @@ public static class BrowserLauncher
         return playwright.Chromium.LaunchAsync(options);
     }
 }
+

@@ -652,22 +652,32 @@ public class TikTokCrawlerService : IAsyncDisposable
         var usernameClean = username.TrimStart('@');
         var profileUrl = $"https://www.tiktok.com/{username}";
 
-        Console.WriteLine($"[secUid] Navigating to {profileUrl}");
-        await page.GotoAsync(profileUrl, new PageGotoOptions
+        Console.WriteLine($"[secUid] GotoAsync bắt đầu: {profileUrl} (timeout=30s)");
+        try
         {
-            WaitUntil = WaitUntilState.Load,
-            Timeout = 60_000
-        });
+            await page.GotoAsync(profileUrl, new PageGotoOptions
+            {
+                WaitUntil = WaitUntilState.DOMContentLoaded,
+                Timeout = 30_000
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[secUid] GotoAsync lỗi/timeout: {ex.Message}");
+            // Attempt to evaluate even if load timed out — may still have partial DOM
+        }
+        Console.WriteLine($"[secUid] GotoAsync xong, đợi NetworkIdle...");
 
         // FIX B3: NetworkIdle wait honours ct via the explicit timeout + ct combo.
         using var ncts = CancellationTokenSource.CreateLinkedTokenSource(ct);
-        ncts.CancelAfter(15_000);
-        try { await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 15_000 }); }
+        ncts.CancelAfter(10_000);
+        try { await page.WaitForLoadStateAsync(LoadState.NetworkIdle, new() { Timeout = 10_000 }); }
         catch (OperationCanceledException) { ct.ThrowIfCancellationRequested(); }
-        catch { /* timeout is acceptable */ }
+        catch (Exception ex) { Console.WriteLine($"[secUid] NetworkIdle timeout (bình thường): {ex.Message}"); }
 
         // Check + try to dismiss captcha (TikTok captcha is a dismissable FE modal)
         var state = await page.EvaluateAsync<string?>(JsCheckCaptcha);
+        Console.WriteLine($"[secUid] Trạng thái trang: {state ?? "unknown"}");
         if (state == "CAPTCHA")
         {
             Console.WriteLine("[Captcha] Phát hiện captcha, đang thử dismiss...");
@@ -684,19 +694,23 @@ public class TikTokCrawlerService : IAsyncDisposable
 
         await SimulateHumanInteraction(page);
 
+        Console.WriteLine("[secUid] WaitForFunction secUid (timeout=20s)...");
         try
         {
             await page.WaitForFunctionAsync(
                 JsWaitForUid,
                 null,
-                new PageWaitForFunctionOptions { Timeout = 45_000 });
+                new PageWaitForFunctionOptions { Timeout = 20_000 });
         }
         catch (OperationCanceledException) { ct.ThrowIfCancellationRequested(); }
-        catch { }
+        catch (Exception ex) { Console.WriteLine($"[secUid] WaitForFunction timeout: {ex.Message}"); }
 
         var secUid = await page.EvaluateAsync<string?>(JsExtractSecUid, usernameClean);
+        Console.WriteLine($"[secUid] Kết quả extract: {(string.IsNullOrEmpty(secUid) ? "THẤT BẠI" : secUid[..Math.Min(30, secUid.Length)] + "...")}");
         if (string.IsNullOrEmpty(secUid))
             throw new Exception($"Không thể trích xuất secUid cho '{target}'. Cookies có thể hết hạn hoặc TikTok đang chặn.");
+
+
 
         return secUid;
     }
