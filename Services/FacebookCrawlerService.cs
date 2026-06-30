@@ -34,7 +34,7 @@ public class FacebookCrawlerService
         using var playwright = await Playwright.CreateAsync();
         var launchOptions = new BrowserTypeLaunchOptions
         {
-            Headless = headless,
+            Headless = true,
             Channel = "msedge",
             Args = new[]
             {

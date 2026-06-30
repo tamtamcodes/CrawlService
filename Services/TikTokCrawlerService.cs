@@ -78,7 +78,7 @@ public sealed class PlaywrightBrowserPool : IAsyncDisposable
             _playwright = await Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                Headless = _headless,
+                Headless = true,
                 Args =
                 [
                     "--no-sandbox",

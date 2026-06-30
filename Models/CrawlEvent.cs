@@ -138,6 +138,10 @@ public class TikTokVideoData
 
     [JsonPropertyName("shares")]
     public int Shares { get; set; }
+
+    [JsonPropertyName("comments_data")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<TikTokComment>? CommentsData { get; set; }
 }
 
 public class TikTokAuthor
