@@ -19,7 +19,7 @@ Content-Type: application/json
   ],
   "start_date": "2026-06-29",
   "end_date": "2026-06-30",
-  "facebook_max_posts": 2
+  "facebook_max_posts": 10
 }
 
 ###

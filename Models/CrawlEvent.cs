@@ -35,6 +35,10 @@ public class CrawlEvent
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<PostData>? Videos { get; set; }
 
+    [JsonPropertyName("facebook_items")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<FacebookRawItem>? FacebookItems { get; set; }
+
     [JsonPropertyName("aborted")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? Aborted { get; set; }
@@ -87,6 +91,14 @@ public class PostData
     [JsonPropertyName("videos")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? Videos { get; set; }
+
+    [JsonPropertyName("captionTracks")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<FacebookCaptionTrack>? CaptionTracks { get; set; }
+
+    [JsonPropertyName("transcript")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public TranscriptData? Transcript { get; set; }
 }
 
 public class TikTokVideoData

@@ -70,7 +70,7 @@ public static class CrawlLogger
         return Task.CompletedTask;
     }
 
-    public static async Task LogTranscriptAsync(string platform, string target, string postId, JsonElement storyJson)
+    public static async Task LogTranscriptAsync(string platform, string target, string postId, object transcript)
     {
         try
         {
@@ -78,7 +78,7 @@ public static class CrawlLogger
             var outputDir = Path.Combine("output", platform, "transcripts", safeTarget);
             Directory.CreateDirectory(outputDir);
 
-            var formatted = JsonSerializer.Serialize(storyJson, PrettyJsonOptions);
+            var formatted = JsonSerializer.Serialize(transcript, PrettyJsonOptions);
             await File.WriteAllTextAsync(
                 Path.Combine(outputDir, $"{postId}.json"),
                 formatted, Encoding.UTF8);
