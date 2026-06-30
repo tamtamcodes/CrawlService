@@ -49,6 +49,27 @@ public static class CrawlLogger
         }
     }
 
+    public static Task ClearTargetOutputAsync(string platform, string target)
+    {
+        try
+        {
+            var safeTarget = SanitizeFileName(target);
+            foreach (var kind in new[] { "raw", "transcripts", "parsed" })
+            {
+                var outputDir = Path.Combine("output", platform, kind, safeTarget);
+                if (Directory.Exists(outputDir))
+                    Directory.Delete(outputDir, recursive: true);
+                Directory.CreateDirectory(outputDir);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] ClearTargetOutputAsync failed: {ex.Message}");
+        }
+
+        return Task.CompletedTask;
+    }
+
     public static async Task LogTranscriptAsync(string platform, string target, string postId, JsonElement storyJson)
     {
         try

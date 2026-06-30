@@ -5,7 +5,7 @@ POST {{baseUrl}}/crawl/facebook
 Content-Type: application/json
 
 {
-  "target": "https://www.facebook.com/profile.php?id=61591548893726",
+  "target": "https://www.facebook.com/misslanenglish?sorting_setting=CHRONOLOGICAL",
   "cookies": [
     { "name": "ps_l", "value": "1", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789525081.65753, "sameSite": "lax" },
     { "name": "datr", "value": "iZ6VaM4Pg6uTd0Rr8EeddS09", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1789195912.441427, "sameSite": "no_restriction" },
@@ -18,7 +18,7 @@ Content-Type: application/json
     { "name": "wd", "value": "1912x914", "domain": ".facebook.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1783326022, "sameSite": "lax" }
   ],
   "start_date": "2026-06-29",
-  "end_date": "2026-06-29",
+  "end_date": "2026-06-30",
   "facebook_max_posts": 2
 }
 

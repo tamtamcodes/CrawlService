@@ -92,9 +92,51 @@ public class FacebookCrawlerService
                 Collected = 0
             };
 
-            var collectedPosts = new List<(PostData Post, JsonElement RawStory, string PostId)>();
+            var collectedPosts = new List<(PostData Post, JsonElement? RawStory, string PostId, string Source)>();
             var seenPostIds = new HashSet<string>();
+            var seenPostUrls = new HashSet<string>();
             var storyBuffer = new System.Collections.Concurrent.ConcurrentQueue<JsonElement>();
+
+            bool AddOrMergePost(PostData post, JsonElement? rawStory, string postId, string source)
+            {
+                var normalizedUrl = NormalizeFacebookUrl(post.PostUrl);
+                var existingIndex = collectedPosts.FindIndex(p =>
+                    (!string.IsNullOrEmpty(postId) && p.PostId == postId) ||
+                    (!string.IsNullOrEmpty(normalizedUrl) && NormalizeFacebookUrl(p.Post.PostUrl) == normalizedUrl));
+
+                if (existingIndex >= 0)
+                {
+                    var existing = collectedPosts[existingIndex];
+
+                    // Prefer GraphQL/raw-backed records over lightweight DOM fallback records.
+                    if (rawStory.HasValue && (!existing.RawStory.HasValue || source == "graphql"))
+                    {
+                        collectedPosts[existingIndex] = (post, rawStory, postId, source);
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(existing.Post.PublishedAt) && !string.IsNullOrEmpty(post.PublishedAt))
+                            existing.Post.PublishedAt = post.PublishedAt;
+                        if (string.IsNullOrEmpty(existing.Post.Caption) && !string.IsNullOrEmpty(post.Caption))
+                            existing.Post.Caption = post.Caption;
+                        if (string.IsNullOrEmpty(existing.Post.AuthorName) && !string.IsNullOrEmpty(post.AuthorName))
+                            existing.Post.AuthorName = post.AuthorName;
+                        if (existing.Post.Likes == 0 && post.Likes > 0) existing.Post.Likes = post.Likes;
+                        if (existing.Post.Comments == 0 && post.Comments > 0) existing.Post.Comments = post.Comments;
+                        if (existing.Post.Shares == 0 && post.Shares > 0) existing.Post.Shares = post.Shares;
+                        collectedPosts[existingIndex] = existing;
+                    }
+
+                    if (!string.IsNullOrEmpty(postId)) seenPostIds.Add(postId);
+                    if (!string.IsNullOrEmpty(normalizedUrl)) seenPostUrls.Add(normalizedUrl);
+                    return false;
+                }
+
+                collectedPosts.Add((post, rawStory, postId, source));
+                if (!string.IsNullOrEmpty(postId)) seenPostIds.Add(postId);
+                if (!string.IsNullOrEmpty(normalizedUrl)) seenPostUrls.Add(normalizedUrl);
+                return true;
+            }
 
             async void OnResponse(object? sender, IResponse response)
             {
@@ -162,6 +204,45 @@ public class FacebookCrawlerService
             }
             catch { }
 
+            // Facebook often renders the first/top stories in the initial page payload/DOM.
+            // Those posts may not appear in later /api/graphql responses, so capture visible
+            // feed articles before scrolling to avoid dropping the newest post.
+            var domFoundEvents = new List<CrawlEvent>();
+            try
+            {
+                var visiblePosts = await ExtractVisibleDomPostsAsync(page, target);
+                foreach (var domPost in visiblePosts)
+                {
+                    if (string.IsNullOrEmpty(domPost.PostUrl)) continue;
+
+                    var publishedDt = TryParsePublishedAt(domPost.PublishedAt);
+                    if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value) continue;
+                    if (startDt.HasValue && publishedDt.HasValue && publishedDt.Value < startDt.Value) continue;
+
+                    domPost.Platform = "facebook";
+                    var domPostId = ExtractPostKey(domPost.PostUrl);
+                    if (string.IsNullOrEmpty(domPostId)) domPostId = $"dom_{Math.Abs(NormalizeFacebookUrl(domPost.PostUrl).GetHashCode())}";
+
+                    var rawDom = CreateSyntheticDomStory(domPost, domPostId);
+                    if (AddOrMergePost(domPost, rawDom, domPostId, "dom"))
+                    {
+                        Console.WriteLine($"[Facebook Crawl][DOM] Found visible: {domPost.PostUrl} | Time: {domPost.PublishedAt}");
+                        domFoundEvents.Add(new CrawlEvent
+                        {
+                            Type = "log",
+                            Message = $"👉 Found Visible Post: {domPost.PostUrl} | Caption: {domPost.Caption[..Math.Min(40, domPost.Caption.Length)]}..."
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[WARN][Facebook DOM fallback] {ex.GetType().Name}: {ex.Message}");
+            }
+
+            foreach (var evt in domFoundEvents)
+                yield return evt;
+
             var lastCount = 0;
             var staleStreak = 0;
 
@@ -215,9 +296,15 @@ public class FacebookCrawlerService
                     try { postId = storyJson.GetProperty("post_id").GetString() ?? ""; } catch { }
                     if (string.IsNullOrEmpty(postId) || seenPostIds.Contains(postId)) continue;
 
-                    seenPostIds.Add(postId);
                     var post = FacebookParser.ExtractPostFromStoryNode(storyJson);
                     if (post == null) continue;
+
+                    var normalizedPostUrl = NormalizeFacebookUrl(post.PostUrl);
+                    if (!string.IsNullOrEmpty(normalizedPostUrl) && seenPostUrls.Contains(normalizedPostUrl))
+                    {
+                        AddOrMergePost(post, storyJson, postId, "graphql");
+                        continue;
+                    }
 
                     if (stopUrls != null && stopUrls.Contains(post.PostUrl))
                     {
@@ -239,7 +326,7 @@ public class FacebookCrawlerService
                     }
 
                     post.Platform = "facebook";
-                    collectedPosts.Add((post, storyJson, postId));
+                    AddOrMergePost(post, storyJson, postId, "graphql");
 
                     Console.WriteLine($"[Facebook Crawl] Found: {post.PostUrl} | Likes: {post.Likes} | Comments: {post.Comments} | Shares: {post.Shares}");
                     yield return new CrawlEvent
@@ -284,7 +371,7 @@ public class FacebookCrawlerService
 
             // Sắp xếp bài viết theo thời gian giảm dần, lấy top maxPosts
             var topPosts = collectedPosts
-                .OrderByDescending(p => p.Post.PublishedAt)
+                .OrderByDescending(p => TryParsePublishedAt(p.Post.PublishedAt) ?? DateTime.MinValue)
                 .Take(maxPosts)
                 .ToList();
 
@@ -294,11 +381,18 @@ public class FacebookCrawlerService
                 Console.WriteLine($"[Facebook Crawl] Đã thu thập {collectedPosts.Count} bài, giữ lại {topPosts.Count} bài mới nhất (bỏ {skipped} bài cũ hơn)");
             }
 
+            // Chỉ giữ output của lần crawl hiện tại. Nếu không dọn, file cũ hơn từ lần chạy
+            // trước vẫn nằm trong folder khiến nhìn giống crawler lấy sai top maxPosts.
+            await CrawlLogger.ClearTargetOutputAsync("facebook", target);
+
             // Chỉ log raw/parsed cho top posts được giữ lại
-            foreach (var (post, rawStory, postId) in topPosts)
+            foreach (var (post, rawStory, postId, _) in topPosts)
             {
-                await CrawlLogger.LogRawJsonAsync("facebook", target, postId, rawStory);
-                await CrawlLogger.LogTranscriptAsync("facebook", target, postId, rawStory);
+                if (rawStory.HasValue)
+                {
+                    await CrawlLogger.LogRawJsonAsync("facebook", target, postId, rawStory.Value);
+                    await CrawlLogger.LogTranscriptAsync("facebook", target, postId, rawStory.Value);
+                }
                 await CrawlLogger.LogParsedPostAsync("facebook", target, post, postId);
             }
 
@@ -377,5 +471,256 @@ public class FacebookCrawlerService
             return result;
         }
         catch { return null; }
+    }
+
+    private static async Task<List<PostData>> ExtractVisibleDomPostsAsync(IPage page, string target)
+    {
+        var json = await page.EvaluateAsync<string>(@"() => {
+            function cleanUrl(raw) {
+                try {
+                    const u = new URL(raw, location.href);
+                    if (!/facebook\.com$/i.test(u.hostname) && !/\.facebook\.com$/i.test(u.hostname)) return '';
+
+                    const storyFbid = u.searchParams.get('story_fbid') || u.searchParams.get('fbid');
+                    const id = u.searchParams.get('id');
+                    if (storyFbid) return `${u.origin}/story.php?story_fbid=${storyFbid}${id ? '&id=' + id : ''}`;
+
+                    u.hash = '';
+                    u.search = '';
+                    return u.href.replace(/\/$/, '');
+                } catch { return ''; }
+            }
+
+            function scoreUrl(url) {
+                if (!url || /comment_id=/i.test(url)) return -100;
+                if (/\/posts\/(pfbid|\d+)/i.test(url)) return 120;
+                if (/\/reel\/\d+/i.test(url)) return 110;
+                if (/story\.php\?story_fbid=/i.test(url)) return 100;
+                if (/\/videos\/\d+/i.test(url)) return 90;
+                if (/\/photos\//i.test(url)) return 70;
+                return 0;
+            }
+
+            function bestPostUrl(article) {
+                let best = '';
+                let bestScore = 0;
+                for (const a of Array.from(article.querySelectorAll('a[href]'))) {
+                    const href = a.href || a.getAttribute('href') || '';
+                    const cleaned = cleanUrl(href);
+                    const s = scoreUrl(href) || scoreUrl(cleaned);
+                    if (s > bestScore) {
+                        best = cleaned;
+                        bestScore = s;
+                    }
+                }
+                return best;
+            }
+
+            function getCaption(article) {
+                const msg = article.querySelector('div[data-ad-preview=""message""], div[data-ad-comet-preview=""message""]');
+                if (msg && msg.innerText && msg.innerText.trim()) return msg.innerText.trim();
+
+                const skip = /^(Like|Comment|Share|Send|Thích|Bình luận|Chia sẻ|See more|Xem thêm|All reactions|Most relevant)$/i;
+                const lines = (article.innerText || '')
+                    .split('\n')
+                    .map(x => x.trim())
+                    .filter(Boolean)
+                    .filter(x => !skip.test(x))
+                    .filter(x => !/^(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\b/i.test(x));
+                return lines.slice(1, 7).join('\n').trim();
+            }
+
+            function getDisplayTime(article) {
+                const timeRe = /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)\s+\d{1,2}\s+[A-Za-z]+\s+\d{4}\s+at\s+\d{1,2}:\d{2}/i;
+                const candidates = [];
+                for (const el of Array.from(article.querySelectorAll('[aria-label], a, span'))) {
+                    const aria = el.getAttribute('aria-label');
+                    if (aria) candidates.push(aria);
+                    if (el.innerText) candidates.push(el.innerText);
+                }
+                const allText = [article.innerText || '', ...candidates].join('\n');
+                const m = allText.match(timeRe);
+                return m ? m[0] : '';
+            }
+
+            function getAuthor(article) {
+                const heading = article.querySelector('h2, h3, strong');
+                return heading && heading.innerText ? heading.innerText.trim().split('\n')[0] : '';
+            }
+
+            const posts = [];
+            const seen = new Set();
+            const articles = Array.from(document.querySelectorAll('div[role=""article""]'));
+            for (const article of articles) {
+                const url = bestPostUrl(article);
+                if (!url || seen.has(url)) continue;
+                seen.add(url);
+                posts.push({
+                    postUrl: url,
+                    caption: getCaption(article),
+                    publishedAt: getDisplayTime(article),
+                    authorName: getAuthor(article)
+                });
+                if (posts.length >= 12) break;
+            }
+            return JSON.stringify(posts);
+        }");
+
+        var domPosts = JsonSerializer.Deserialize<List<DomFacebookPost>>(json, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        }) ?? new List<DomFacebookPost>();
+
+        return domPosts
+            .Where(p => !string.IsNullOrWhiteSpace(p.PostUrl))
+            .Select(p => new PostData
+            {
+                Platform = "facebook",
+                PostUrl = NormalizeFacebookUrl(p.PostUrl),
+                Caption = p.Caption ?? "",
+                PublishedAt = ParseFacebookDisplayDate(p.PublishedAt)?.ToString("o"),
+                Views = 0,
+                Likes = 0,
+                Comments = 0,
+                Shares = 0,
+                AuthorName = string.IsNullOrWhiteSpace(p.AuthorName) ? null : p.AuthorName,
+                Images = new List<string>(),
+                Videos = IsFacebookVideoUrl(p.PostUrl) ? new List<string> { NormalizeFacebookUrl(p.PostUrl) } : new List<string>()
+            })
+            .ToList();
+    }
+
+    private static JsonElement CreateSyntheticDomStory(PostData post, string postId)
+    {
+        var published = TryParsePublishedAt(post.PublishedAt);
+        var raw = new
+        {
+            __typename = "Story",
+            source = "visible_dom_fallback",
+            post_id = postId,
+            url = post.PostUrl,
+            creation_time = published.HasValue ? new DateTimeOffset(published.Value).ToUnixTimeSeconds() : (long?)null,
+            display_time = post.PublishedAt,
+            message = new { text = post.Caption },
+            author = new { name = post.AuthorName }
+        };
+
+        using var doc = JsonDocument.Parse(JsonSerializer.Serialize(raw));
+        return doc.RootElement.Clone();
+    }
+
+    private static DateTime? TryParsePublishedAt(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        if (DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out var parsed))
+            return parsed;
+        return ParseFacebookDisplayDate(value);
+    }
+
+    private static DateTime? ParseFacebookDisplayDate(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return null;
+        var cleaned = Regex.Replace(value.Trim(), @"\s+", " ");
+        var patterns = new[]
+        {
+            "dddd d MMMM yyyy 'at' HH:mm",
+            "dddd dd MMMM yyyy 'at' HH:mm",
+            "d MMMM yyyy 'at' HH:mm",
+            "dd MMMM yyyy 'at' HH:mm"
+        };
+
+        foreach (var pattern in patterns)
+        {
+            if (DateTime.TryParseExact(cleaned, pattern, CultureInfo.InvariantCulture, DateTimeStyles.None, out var localTime))
+                return ConvertVietnamLocalToUtc(localTime);
+        }
+
+        if (DateTime.TryParse(cleaned, CultureInfo.InvariantCulture, DateTimeStyles.None, out var fallback))
+            return ConvertVietnamLocalToUtc(fallback);
+
+        return null;
+    }
+
+    private static DateTime ConvertVietnamLocalToUtc(DateTime localTime)
+    {
+        try
+        {
+            var tz = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+            return TimeZoneInfo.ConvertTimeToUtc(DateTime.SpecifyKind(localTime, DateTimeKind.Unspecified), tz);
+        }
+        catch
+        {
+            return DateTime.SpecifyKind(localTime.AddHours(-7), DateTimeKind.Utc);
+        }
+    }
+
+    private static string NormalizeFacebookUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return "";
+        try
+        {
+            var uri = new Uri(url);
+            var host = uri.Host.ToLowerInvariant();
+            if (host == "l.facebook.com") return url;
+
+            if (uri.AbsolutePath.Equals("/story.php", StringComparison.OrdinalIgnoreCase))
+            {
+                var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+                var storyFbid = query.Get("story_fbid") ?? query.Get("fbid");
+                var id = query.Get("id");
+                if (!string.IsNullOrEmpty(storyFbid))
+                    return $"{uri.Scheme}://{uri.Host}/story.php?story_fbid={storyFbid}{(!string.IsNullOrEmpty(id) ? "&id=" + id : "")}";
+            }
+
+            return $"{uri.Scheme}://{uri.Host}{uri.AbsolutePath}".TrimEnd('/');
+        }
+        catch
+        {
+            return url.Trim().TrimEnd('/');
+        }
+    }
+
+    private static string ExtractPostKey(string? url)
+    {
+        var normalized = NormalizeFacebookUrl(url);
+        if (string.IsNullOrEmpty(normalized)) return "";
+
+        try
+        {
+            var uri = new Uri(normalized);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+            var storyFbid = query.Get("story_fbid") ?? query.Get("fbid");
+            if (!string.IsNullOrEmpty(storyFbid)) return storyFbid;
+
+            var parts = uri.AbsolutePath.Trim('/').Split('/', StringSplitOptions.RemoveEmptyEntries);
+            for (var i = 0; i < parts.Length - 1; i++)
+            {
+                if (parts[i].Equals("posts", StringComparison.OrdinalIgnoreCase) ||
+                    parts[i].Equals("reel", StringComparison.OrdinalIgnoreCase) ||
+                    parts[i].Equals("videos", StringComparison.OrdinalIgnoreCase))
+                    return parts[i + 1];
+            }
+
+            return parts.LastOrDefault() ?? "";
+        }
+        catch
+        {
+            return "";
+        }
+    }
+
+    private static bool IsFacebookVideoUrl(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url)) return false;
+        return url.Contains("/reel/", StringComparison.OrdinalIgnoreCase) ||
+               url.Contains("/videos/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed class DomFacebookPost
+    {
+        public string? PostUrl { get; set; }
+        public string? Caption { get; set; }
+        public string? PublishedAt { get; set; }
+        public string? AuthorName { get; set; }
     }
 }
