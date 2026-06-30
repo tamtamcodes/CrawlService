@@ -330,7 +330,8 @@ public class TikTokCrawlerService : IAsyncDisposable
         string? endDateStr,
         string periodStr,
         List<PlaywrightCookie>? cookies,
-        [EnumeratorCancellation] CancellationToken cancellationToken)
+        [EnumeratorCancellation] CancellationToken cancellationToken,
+        bool includeComments = false)
     {
         long startTime;
         if (!string.IsNullOrEmpty(startDateStr) && TryParseIsoToUnix(startDateStr, out var st))
@@ -545,11 +546,14 @@ public class TikTokCrawlerService : IAsyncDisposable
                         targetCount++;
                         totalCollected++;
 
-                        yield return new CrawlEvent { Type = "log", Message = $"Đang lấy comment cho video {raw.Id}..." };
-                        raw.Comments = new List<TikTokComment>();
-                        await foreach (var commentEvent in ScrapeCommentsStreamAsync(raw.Id!, target, page, raw.Comments, cancellationToken))
+                        if (includeComments)
                         {
-                            yield return commentEvent;
+                            yield return new CrawlEvent { Type = "log", Message = $"Đang lấy comment cho video {raw.Id}..." };
+                            raw.Comments = new List<TikTokComment>();
+                            await foreach (var commentEvent in ScrapeCommentsStreamAsync(raw.Id!, target, page, raw.Comments, cancellationToken))
+                            {
+                                yield return commentEvent;
+                            }
                         }
 
                         // Save the full TikTokRawItem (includes comments) as a single JSON file
@@ -558,6 +562,12 @@ public class TikTokCrawlerService : IAsyncDisposable
                         var filePath = Path.Combine(rawDir, $"{timestamp}_{target}_{raw.Id}_raw.json");
                         var rawJson = JsonSerializer.Serialize(raw, JsonOptions);
                         await _writeChannel.Writer.WriteAsync((filePath, rawJson), cancellationToken);
+
+                        yield return new CrawlEvent
+                        {
+                            Type = "item",
+                            RawItems = new List<TikTokRawItem> { raw }
+                        };
                     }
                 }
 

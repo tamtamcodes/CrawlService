@@ -23,7 +23,8 @@ public class FacebookCrawlerService
         List<PlaywrightCookie>? cookies,
         [EnumeratorCancellation] CancellationToken cancellationToken,
         HashSet<string>? stopUrls = null,
-        ScrollConfig? scrollConfig = null)
+        ScrollConfig? scrollConfig = null,
+        bool includeTranscripts = false)
     {
         var cfg = scrollConfig ?? new ScrollConfig();
         var startDt = ParseIsoDate(startDate);
@@ -393,9 +394,11 @@ public class FacebookCrawlerService
                 if (rawStory.HasValue)
                 {
                     post.CaptionTracks = FacebookParser.ExtractCaptionTracks(rawStory.Value);
-                    post.Transcript = await FetchFacebookTranscriptAsync(post.CaptionTracks, cancellationToken);
+                    if (includeTranscripts)
+                        post.Transcript = await FetchFacebookTranscriptAsync(post.CaptionTracks, cancellationToken);
                     await CrawlLogger.LogRawJsonAsync("facebook", target, postId, rawStory.Value);
-                    await CrawlLogger.LogTranscriptAsync("facebook", target, postId, post.Transcript ?? new TranscriptData { HasTranscript = false, Captions = new List<CaptionEntry>() });
+                    if (includeTranscripts)
+                        await CrawlLogger.LogTranscriptAsync("facebook", target, postId, post.Transcript ?? new TranscriptData { HasTranscript = false, Captions = new List<CaptionEntry>() });
                 }
                 await CrawlLogger.LogParsedPostAsync("facebook", target, post, postId);
             }

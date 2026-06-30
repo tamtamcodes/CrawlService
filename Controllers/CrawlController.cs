@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SocialCrawler.Models;
 using SocialCrawler.Services;
@@ -58,11 +59,97 @@ public class CrawlController : ControllerBase
 
     [HttpPost("/crawl/facebook", Name = "CrawlFacebook")]
     [Tags("Crawlers")]
-    public IActionResult CrawlFacebook([FromBody] CrawlRequest req)
+    public async Task<IActionResult> CrawlFacebook([FromBody] CrawlRequest req)
     {
         var targets = ResolveTargets(req);
         if (targets == null)
             return BadRequest(new { detail = "Missing target or targets parameter" });
+
+        if (IsStreamMode(req))
+            return CreateFacebookStreamResult(req, targets);
+
+        var started = DateTimeOffset.UtcNow;
+        var sw = Stopwatch.StartNew();
+        var includeItems = IncludesTopField(req, "items");
+        var includeEvents = IncludesTopField(req, "events");
+        var includeErrors = IncludesTopField(req, "errors");
+        var events = new List<CrawlEvent>();
+        var errors = new List<CrawlEvent>();
+        var items = new List<FacebookRawItem>();
+        var count = 0;
+        var aborted = false;
+        var hasError = false;
+
+        var lockTaken = false;
+        try
+        {
+            await _crawlState.CrawlLock.WaitAsync(HttpContext.RequestAborted);
+            lockTaken = true;
+            _crawlState.ResetCancellation();
+            _crawlState.SetRunning(string.Join(",", targets));
+
+            var cookies = ParseCookies(req.Cookies, ".facebook.com");
+            var scrollConfig = ScrollConfig.FromRequest(req);
+            var stopUrls = req.StopUrls != null ? new HashSet<string>(req.StopUrls) : null;
+
+            var gen = _facebookCrawler.ScrapeAsync(
+                targets, req.StartDate, req.EndDate, req.FacebookMaxPosts,
+                cookies, _crawlState.CancellationToken, stopUrls, scrollConfig, ShouldIncludeTranscripts(req));
+
+            await foreach (var evt in gen.WithCancellation(HttpContext.RequestAborted))
+            {
+                if (includeEvents) events.Add(evt);
+                if (evt.Type == "error")
+                {
+                    hasError = true;
+                    if (includeErrors) errors.Add(evt);
+                }
+                if (evt.Type == "done")
+                {
+                    count += evt.Count ?? evt.FacebookItems?.Count ?? evt.Videos?.Count ?? 0;
+                    if (includeItems && evt.FacebookItems is { Count: > 0 }) items.AddRange(evt.FacebookItems);
+                    aborted = evt.Aborted == true;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            var err = new CrawlEvent { Type = "error", Message = e.Message, Aborted = true };
+            if (includeEvents) events.Add(err);
+            if (includeErrors) errors.Add(err);
+            aborted = true;
+            hasError = true;
+        }
+        finally
+        {
+            if (lockTaken)
+            {
+                _crawlState.SetIdle();
+                _crawlState.CrawlLock.Release();
+            }
+        }
+
+        sw.Stop();
+        var response = new CrawlApiResponse<FacebookRawItem>
+        {
+            Status = hasError ? "error" : "ok",
+            Platform = "facebook",
+            Targets = targets,
+            Count = includeItems ? items.Count : count,
+            Items = items,
+            Events = events,
+            Errors = errors,
+            Aborted = aborted,
+            StartedAt = started.ToString("o"),
+            FinishedAt = DateTimeOffset.UtcNow.ToString("o"),
+            ElapsedMs = sw.ElapsedMilliseconds
+        };
+
+        return Ok(SelectFields(response, req));
+    }
+
+    private IActionResult CreateFacebookStreamResult(CrawlRequest req, List<string> targets)
+    {
 
         return new PushStreamResult(async (stream, ct) =>
         {
@@ -97,11 +184,11 @@ public class CrawlController : ControllerBase
 
                 var gen = _facebookCrawler.ScrapeAsync(
                     targets, req.StartDate, req.EndDate, req.FacebookMaxPosts,
-                    cookies, _crawlState.CancellationToken, stopUrls, scrollConfig);
+                    cookies, _crawlState.CancellationToken, stopUrls, scrollConfig, ShouldIncludeTranscripts(req));
 
                 await foreach (var evt in gen.WithCancellation(ct))
                 {
-                    await writer.WriteAsync(FormatSse(evt));
+                    await writer.WriteAsync(FormatSse(evt, req));
                     await writer.FlushAsync();
                     if (ct.IsCancellationRequested) break;
                 }
@@ -109,9 +196,9 @@ public class CrawlController : ControllerBase
             catch (Exception e)
             {
                 var errEvt = new CrawlEvent { Type = "error", Message = e.Message };
-                await writer.WriteAsync(FormatSse(errEvt));
+                await writer.WriteAsync(FormatSse(errEvt, req));
                 var doneEvt = new CrawlEvent { Type = "done", Count = 0, Videos = new(), Aborted = true };
-                await writer.WriteAsync(FormatSse(doneEvt));
+                await writer.WriteAsync(FormatSse(doneEvt, req));
                 await writer.FlushAsync();
             }
             finally
@@ -125,11 +212,99 @@ public class CrawlController : ControllerBase
     [HttpPost("/crawl/tiktok", Name = "CrawlTikTok")]
     [HttpPost("/crawl", Name = "CrawlTikTokCompat")]
     [Tags("Crawlers")]
-    public IActionResult CrawlTikTok([FromBody] CrawlRequest req)
+    public async Task<IActionResult> CrawlTikTok([FromBody] CrawlRequest req)
     {
         var targets = ResolveTargets(req);
         if (targets == null)
             return BadRequest(new { detail = "Missing target or targets parameter" });
+
+        if (IsStreamMode(req))
+            return CreateTikTokStreamResult(req, targets);
+
+        var started = DateTimeOffset.UtcNow;
+        var sw = Stopwatch.StartNew();
+        var includeItems = IncludesTopField(req, "items");
+        var includeEvents = IncludesTopField(req, "events");
+        var includeErrors = IncludesTopField(req, "errors");
+        var events = new List<CrawlEvent>();
+        var errors = new List<CrawlEvent>();
+        var items = new List<TikTokRawItem>();
+        var count = 0;
+        var aborted = false;
+        var hasError = false;
+
+        var lockTaken = false;
+        try
+        {
+            await _crawlState.CrawlLock.WaitAsync(HttpContext.RequestAborted);
+            lockTaken = true;
+            _crawlState.ResetCancellation();
+            _crawlState.SetRunning(string.Join(",", targets));
+
+            var cookies = ParseCookies(req.Cookies, ".tiktok.com");
+
+            var gen = _tikTokCrawler.ScrapeStreamAsync(
+                targets, req.StartDate, req.EndDate, req.Period,
+                cookies, _crawlState.CancellationToken, ShouldIncludeComments(req));
+
+            await foreach (var evt in gen.WithCancellation(HttpContext.RequestAborted))
+            {
+                if (includeEvents) events.Add(evt);
+                if (evt.Type == "error")
+                {
+                    hasError = true;
+                    if (includeErrors) errors.Add(evt);
+                }
+                if (evt.Type == "item" && evt.RawItems is { Count: > 0 })
+                {
+                    count += evt.RawItems.Count;
+                    if (includeItems) items.AddRange(evt.RawItems);
+                }
+                if (evt.Type == "done")
+                {
+                    if (count == 0) count = evt.Count ?? 0;
+                    aborted = evt.Aborted == true;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            var err = new CrawlEvent { Type = "error", Message = e.Message, Aborted = true };
+            if (includeEvents) events.Add(err);
+            if (includeErrors) errors.Add(err);
+            aborted = true;
+            hasError = true;
+        }
+        finally
+        {
+            if (lockTaken)
+            {
+                _crawlState.SetIdle();
+                _crawlState.CrawlLock.Release();
+            }
+        }
+
+        sw.Stop();
+        var response = new CrawlApiResponse<TikTokRawItem>
+        {
+            Status = hasError ? "error" : "ok",
+            Platform = "tiktok",
+            Targets = targets,
+            Count = includeItems ? items.Count : count,
+            Items = items,
+            Events = events,
+            Errors = errors,
+            Aborted = aborted,
+            StartedAt = started.ToString("o"),
+            FinishedAt = DateTimeOffset.UtcNow.ToString("o"),
+            ElapsedMs = sw.ElapsedMilliseconds
+        };
+
+        return Ok(SelectFields(response, req));
+    }
+
+    private IActionResult CreateTikTokStreamResult(CrawlRequest req, List<string> targets)
+    {
 
         return new PushStreamResult(async (stream, ct) =>
         {
@@ -162,11 +337,11 @@ public class CrawlController : ControllerBase
 
                 var gen = _tikTokCrawler.ScrapeStreamAsync(
                     targets, req.StartDate, req.EndDate, req.Period,
-                    cookies, _crawlState.CancellationToken);
+                    cookies, _crawlState.CancellationToken, ShouldIncludeComments(req));
 
                 await foreach (var evt in gen.WithCancellation(ct))
                 {
-                    await writer.WriteAsync(FormatSse(evt));
+                    await writer.WriteAsync(FormatSse(evt, req));
                     await writer.FlushAsync();
                     if (ct.IsCancellationRequested) break;
                 }
@@ -174,9 +349,9 @@ public class CrawlController : ControllerBase
             catch (Exception e)
             {
                 var errEvt = new CrawlEvent { Type = "error", Message = e.Message };
-                await writer.WriteAsync(FormatSse(errEvt));
+                await writer.WriteAsync(FormatSse(errEvt, req));
                 var doneEvt = new CrawlEvent { Type = "done", Count = 0, Videos = new(), Aborted = true };
-                await writer.WriteAsync(FormatSse(doneEvt));
+                await writer.WriteAsync(FormatSse(doneEvt, req));
                 await writer.FlushAsync();
             }
             finally
@@ -221,9 +396,42 @@ public class CrawlController : ControllerBase
     private static List<PlaywrightCookie> ParseCookiesFromElement(System.Text.Json.JsonElement el, string defaultDomain)
         => CookieService.ParseCookiesFromElement(el, defaultDomain);
 
-    private static string FormatSse(CrawlEvent evt)
+    private static bool IsStreamMode(CrawlRequest req)
+        => string.Equals(req.ResponseMode, "stream", StringComparison.OrdinalIgnoreCase) ||
+           string.Equals(req.ResponseMode, "sse", StringComparison.OrdinalIgnoreCase);
+
+    private static object SelectFields(object source, CrawlRequest req)
+        => JsonFieldSelector.Apply(source, ResolveFields(req), JsonOptions);
+
+    private static IEnumerable<string>? ResolveFields(CrawlRequest req)
+        => req.Fields is { Count: > 0 } ? req.Fields : req.ResponseFields;
+
+    private static bool IncludesTopField(CrawlRequest req, string topField)
     {
-        var json = JsonSerializer.Serialize(evt, JsonOptions);
+        var fields = ResolveFields(req)?.ToList();
+        if (fields == null || fields.Count == 0) return true;
+        return fields.SelectMany(f => f.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Any(f => f == "*" || f.Equals(topField, StringComparison.OrdinalIgnoreCase) || f.StartsWith(topField + ".", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static bool ShouldIncludeComments(CrawlRequest req)
+        => req.IncludeComments == true || IncludesFieldPath(req, "items.comments");
+
+    private static bool ShouldIncludeTranscripts(CrawlRequest req)
+        => req.IncludeTranscripts == true || IncludesFieldPath(req, "items.transcript");
+
+    private static bool IncludesFieldPath(CrawlRequest req, string path)
+    {
+        var fields = ResolveFields(req)?.ToList();
+        if (fields == null || fields.Count == 0) return false;
+        return fields.SelectMany(f => f.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+            .Any(f => f == "*" || f.Equals(path, StringComparison.OrdinalIgnoreCase) || f.StartsWith(path + ".", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string FormatSse(CrawlEvent evt, CrawlRequest? req = null)
+    {
+        var payload = req == null ? evt : SelectFields(evt, req);
+        var json = JsonSerializer.Serialize(payload, JsonOptions);
         return $"event: {evt.Type}\ndata: {json}\n\n";
     }
 }

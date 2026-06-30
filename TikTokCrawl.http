@@ -64,6 +64,117 @@ Content-Type: application/json
 
 ###
 
+### TikTok Crawl - JSON Light Fields Only
+POST {{baseUrl}}/crawl/tiktok
+Content-Type: application/json
+
+{
+  "target": "@erone645",
+  "cookies": [
+    { "name": "sessionid", "value": "b5a87ba0615549ac49def5713fe460f8", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.980104 },
+    { "name": "ttwid", "value": "1%7C9LRiNGl-hVdhTURIa7loznMM4L7qz9Cy_32347mXK7Q%7C1782352982%7C259ca983b4eab85e127ea15527ed81daff6749709ec749caa2f0ec115bd6702e", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813888983.225862, "sameSite": "no_restriction" },
+    { "name": "msToken", "value": "LclXnHi5pot4Gu2tscSBHB-GMWSthG5Y_7k5xQWUF4UpLW9uQBgS8iNN8M0mDAWzw1HXB9lqGjV2Fx_WYLZCjNF8e6-y337kSr0Q9i79-jvXmYZ3NukBzoXCEvW2p03IYln1m__d7VigvDs=", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1783216984.047555, "sameSite": "no_restriction" }
+  ],
+  "start_date": "2026-06-27",
+  "end_date": "2026-06-28",
+  "period": "week",
+  "fields": [
+    "status",
+    "platform",
+    "count",
+    "items.id",
+    "items.desc",
+    "items.createTime",
+    "items.author.uniqueId",
+    "items.author.nickname",
+    "items.stats.playCount",
+    "items.stats.diggCount",
+    "items.stats.commentCount",
+    "items.stats.shareCount"
+  ]
+}
+
+###
+
+### TikTok Crawl - Include Comments
+POST {{baseUrl}}/crawl/tiktok
+Content-Type: application/json
+
+{
+  "target": "@erone645",
+  "cookies": [
+    { "name": "sessionid", "value": "b5a87ba0615549ac49def5713fe460f8", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.980104 },
+    { "name": "ttwid", "value": "1%7C9LRiNGl-hVdhTURIa7loznMM4L7qz9Cy_32347mXK7Q%7C1782352982%7C259ca983b4eab85e127ea15527ed81daff6749709ec749caa2f0ec115bd6702e", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813888983.225862, "sameSite": "no_restriction" },
+    { "name": "msToken", "value": "LclXnHi5pot4Gu2tscSBHB-GMWSthG5Y_7k5xQWUF4UpLW9uQBgS8iNN8M0mDAWzw1HXB9lqGjV2Fx_WYLZCjNF8e6-y337kSr0Q9i79-jvXmYZ3NukBzoXCEvW2p03IYln1m__d7VigvDs=", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1783216984.047555, "sameSite": "no_restriction" }
+  ],
+  "start_date": "2026-06-27",
+  "end_date": "2026-06-28",
+  "period": "week",
+  "include_comments": true,
+  "fields": [
+    "status",
+    "count",
+    "items.id",
+    "items.desc",
+    "items.comments.cid",
+    "items.comments.text",
+    "items.comments.createTime",
+    "items.comments.diggCount",
+    "items.comments.user.uniqueId",
+    "items.comments.user.nickname"
+  ]
+}
+
+###
+
+### TikTok Crawl - Auto Include Comments By Field Selection
+POST {{baseUrl}}/crawl/tiktok
+Content-Type: application/json
+
+{
+  "target": "@erone645",
+  "cookies": [
+    { "name": "sessionid", "value": "b5a87ba0615549ac49def5713fe460f8", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.980104 },
+    { "name": "ttwid", "value": "1%7C9LRiNGl-hVdhTURIa7loznMM4L7qz9Cy_32347mXK7Q%7C1782352982%7C259ca983b4eab85e127ea15527ed81daff6749709ec749caa2f0ec115bd6702e", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813888983.225862, "sameSite": "no_restriction" },
+    { "name": "msToken", "value": "LclXnHi5pot4Gu2tscSBHB-GMWSthG5Y_7k5xQWUF4UpLW9uQBgS8iNN8M0mDAWzw1HXB9lqGjV2Fx_WYLZCjNF8e6-y337kSr0Q9i79-jvXmYZ3NukBzoXCEvW2p03IYln1m__d7VigvDs=", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1783216984.047555, "sameSite": "no_restriction" }
+  ],
+  "start_date": "2026-06-27",
+  "end_date": "2026-06-28",
+  "period": "week",
+  "fields": [
+    "items.id",
+    "items.comments"
+  ]
+}
+
+###
+
+### TikTok Crawl - Stream SSE Legacy Mode
+POST {{baseUrl}}/crawl/tiktok
+Content-Type: application/json
+
+{
+  "target": "@erone645",
+  "cookies": [
+    { "name": "sessionid", "value": "b5a87ba0615549ac49def5713fe460f8", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1796802571.980104 },
+    { "name": "ttwid", "value": "1%7C9LRiNGl-hVdhTURIa7loznMM4L7qz9Cy_32347mXK7Q%7C1782352982%7C259ca983b4eab85e127ea15527ed81daff6749709ec749caa2f0ec115bd6702e", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": true, "expirationDate": 1813888983.225862, "sameSite": "no_restriction" },
+    { "name": "msToken", "value": "LclXnHi5pot4Gu2tscSBHB-GMWSthG5Y_7k5xQWUF4UpLW9uQBgS8iNN8M0mDAWzw1HXB9lqGjV2Fx_WYLZCjNF8e6-y337kSr0Q9i79-jvXmYZ3NukBzoXCEvW2p03IYln1m__d7VigvDs=", "domain": ".tiktok.com", "path": "/", "secure": true, "httpOnly": false, "expirationDate": 1783216984.047555, "sameSite": "no_restriction" }
+  ],
+  "start_date": "2026-06-27",
+  "end_date": "2026-06-28",
+  "period": "week",
+  "response_mode": "stream",
+  "fields": [
+    "type",
+    "message",
+    "count",
+    "RawItems.id",
+    "RawItems.desc"
+  ]
+}
+
+###
+
 ### TikTok Session Validation
 POST {{baseUrl}}/validate_session
 Content-Type: application/json

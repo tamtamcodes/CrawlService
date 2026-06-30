@@ -85,6 +85,21 @@ public class CrawlRequest
 
     [JsonPropertyName("popup_dismiss_delay")]
     public int? PopupDismissDelay { get; set; }
+
+    [JsonPropertyName("response_mode")]
+    public string? ResponseMode { get; set; }
+
+    [JsonPropertyName("fields")]
+    public List<string>? Fields { get; set; }
+
+    [JsonPropertyName("response_fields")]
+    public List<string>? ResponseFields { get; set; }
+
+    [JsonPropertyName("include_comments")]
+    public bool? IncludeComments { get; set; }
+
+    [JsonPropertyName("include_transcripts")]
+    public bool? IncludeTranscripts { get; set; }
 }
 
 public class ValidateSessionRequest
