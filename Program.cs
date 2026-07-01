@@ -1,4 +1,4 @@
-using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using Scalar.AspNetCore;
 using SocialCrawler.Services;
 
@@ -79,6 +79,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSingleton<CrawlStateService>();
+builder.Services.AddScoped<SocialCrawler.Services.Human.IHumanBehaviorProvider, SocialCrawler.Services.Human.HumanBehaviorProvider>();
 builder.Services.AddScoped<FacebookCrawlerService>();
 builder.Services.AddScoped<TikTokCrawlerService>();
 builder.Services.AddScoped<SessionValidationService>();
@@ -136,6 +137,6 @@ app.MapGet("/docs/enterprise", async () =>
 
 app.MapControllers();
 
-var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5001";
 app.Run($"http://0.0.0.0:{port}");
 

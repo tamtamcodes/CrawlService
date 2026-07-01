@@ -10,3 +10,4 @@ output/
 *.json
 !facebook_cookie.json
 !tiktok_cookie.json
+!appsettings.json

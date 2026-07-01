@@ -11,9 +11,15 @@ namespace SocialCrawler.Services;
 
 public class FacebookCrawlerService
 {
+    private readonly Human.IHumanBehaviorProvider _humanBehavior;
     private static readonly Regex GraphQlFilter = new(@"/(api/graphql|graphql|api\.graphql)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
     private static readonly Random Rng = new();
     private static readonly HttpClient Http = new();
+
+    public FacebookCrawlerService(Human.IHumanBehaviorProvider humanBehavior)
+    {
+        _humanBehavior = humanBehavior;
+    }
 
     public async IAsyncEnumerable<CrawlEvent> ScrapeAsync(
         List<string> targets,
@@ -157,7 +163,7 @@ public class FacebookCrawlerService
             CrawlEvent? gotoErrorEvent = null;
             try
             {
-                await page.GotoAsync(target, new PageGotoOptions { WaitUntil = WaitUntilState.DOMContentLoaded, Timeout = 60000 });
+                await _humanBehavior.NavigateToAsync(page, target);
             }
             catch (Exception ex)
             {
@@ -251,16 +257,11 @@ public class FacebookCrawlerService
                     break;
                 }
 
-                await SimulateHumanInteraction(page, cfg);
+                await _humanBehavior.SimulateThinkingIdleAsync(page, (int)(cfg.HumanScrollDelayMin * 1000), (int)(cfg.HumanScrollDelayMax * 1000));
 
                 try
                 {
-                    for (var i = 0; i < Rng.Next(cfg.ScrollStepsMin, cfg.ScrollStepsMax); i++)
-                    {
-                        await page.Keyboard.PressAsync("PageDown");
-                        await page.WaitForTimeoutAsync(Rng.Next(cfg.InterStepDelayMin, cfg.InterStepDelayMax));
-                    }
-                    await page.EvaluateAsync("window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });");
+                    await _humanBehavior.ScrollAsync(page, "body", 800);
                 }
                 catch (Exception se)
                 {

@@ -57,7 +57,7 @@ public class CrawlController : ControllerBase
         return Ok(new { status = "ok", message = "Không có tiến trình nào đang chạy." });
     }
 
-    [HttpPost("/crawl/facebook", Name = "CrawlFacebook")]
+    [HttpPost("engine/crawl/facebook", Name = "CrawlFacebook")]
     [Tags("Crawlers")]
     public async Task<IActionResult> CrawlFacebook([FromBody] CrawlRequest req)
     {
@@ -209,8 +209,8 @@ public class CrawlController : ControllerBase
         });
     }
 
-    [HttpPost("/crawl/tiktok", Name = "CrawlTikTok")]
-    [HttpPost("/crawl", Name = "CrawlTikTokCompat")]
+    [HttpPost("engine/crawl/tiktok", Name = "CrawlTikTok")]
+    [HttpPost("engine/crawl", Name = "CrawlTikTokCompat")]
     [Tags("Crawlers")]
     public async Task<IActionResult> CrawlTikTok([FromBody] CrawlRequest req)
     {

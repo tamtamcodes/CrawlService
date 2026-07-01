@@ -144,6 +144,7 @@ public class TikTokCrawlerService : IAsyncDisposable
 
     // FIX B1: Pool shared across all concurrent crawl calls on this service instance.
     private readonly PlaywrightBrowserPool _browserPool;
+    private readonly Human.IHumanBehaviorProvider _humanBehavior;
 
     // FIX B5: Single background writer drains the channel sequentially so the hot
     // crawl loop never blocks on disk I/O.
@@ -151,9 +152,10 @@ public class TikTokCrawlerService : IAsyncDisposable
     private readonly Task _writerTask;
     private readonly CancellationTokenSource _writerCts = new();
 
-    public TikTokCrawlerService(int maxConcurrentContexts = 5)
+    public TikTokCrawlerService(Human.IHumanBehaviorProvider humanBehavior)
     {
-        _browserPool = new PlaywrightBrowserPool(maxConcurrentContexts);
+        _humanBehavior = humanBehavior;
+        _browserPool = new PlaywrightBrowserPool(5);
 
         // FIX B6: Build the Polly resilience pipeline.
         _fetchPipeline = new ResiliencePipelineBuilder<JsonElement>()
@@ -644,7 +646,7 @@ public class TikTokCrawlerService : IAsyncDisposable
     }
 
     // FIX B3: cancellationToken threaded through every Playwright call.
-    private static async Task<string?> ExtractSecUidAsync(IPage page, string target, CancellationToken ct)
+    private async Task<string?> ExtractSecUidAsync(IPage page, string target, CancellationToken ct)
     {
         if (target.StartsWith("MS4wLjABAAAA") && target.Length > 50) return target;
 
@@ -655,11 +657,7 @@ public class TikTokCrawlerService : IAsyncDisposable
         Console.WriteLine($"[secUid] GotoAsync bắt đầu: {profileUrl} (timeout=30s)");
         try
         {
-            await page.GotoAsync(profileUrl, new PageGotoOptions
-            {
-                WaitUntil = WaitUntilState.DOMContentLoaded,
-                Timeout = 30_000
-            });
+            await _humanBehavior.NavigateToAsync(page, profileUrl);
         }
         catch (Exception ex)
         {
@@ -733,7 +731,7 @@ public class TikTokCrawlerService : IAsyncDisposable
     }
 
     // FIX B3: cancellationToken passed through.
-    private static async Task EnsureBytedAcrawlerAsync(IPage page, CancellationToken ct)
+    private async Task EnsureBytedAcrawlerAsync(IPage page, CancellationToken ct)
     {
         try
         {
@@ -745,7 +743,7 @@ public class TikTokCrawlerService : IAsyncDisposable
         catch
         {
             ct.ThrowIfCancellationRequested();
-            await page.GotoAsync("https://www.tiktok.com", new PageGotoOptions { Timeout = 60_000 });
+            await _humanBehavior.NavigateToAsync(page, "https://www.tiktok.com");
             await page.WaitForFunctionAsync(
                 "window.byted_acrawler !== undefined",
                 null,

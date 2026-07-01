@@ -9,7 +9,7 @@ using SocialCrawler.Services;
 namespace SocialCrawler.Controllers;
 
 [ApiController]
-[Route("api/crawl")]
+[Route("crawl")]
 public class CrawlEngineController : ControllerBase
 {
     private readonly FacebookCrawlerService _facebookCrawler;
