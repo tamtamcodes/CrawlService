@@ -146,11 +146,15 @@ public class FacebookCrawlerService
                 try
                 {
                     if (!GraphQlFilter.IsMatch(response.Url)) return;
+                    Console.WriteLine($"[NET] Processing GraphQL response: {response.Url}");
                     var body = await response.TextAsync();
+                    Console.WriteLine($"[NET] GraphQL body length: {body.Length} chars");
                     var stories = FacebookParser.ParseGraphQlResponse(body);
                     foreach (var s in stories) storyBuffer.Enqueue(s);
                     if (stories.Count > 0)
                         Console.WriteLine($"[NET] GraphQL matched: {response.Url} | Stories found: {stories.Count}");
+                    else
+                        Console.WriteLine($"[NET] GraphQL matched but 0 stories (non-feed query or empty): {response.Url}");
                 }
                 catch (Exception ex)
                 {
@@ -214,13 +218,26 @@ public class FacebookCrawlerService
             try
             {
                 var visiblePosts = await ExtractVisibleDomPostsAsync(page, target);
+                Console.WriteLine($"[DEBUG] DOM extraction: found {visiblePosts.Count} visible posts");
                 foreach (var domPost in visiblePosts)
                 {
-                    if (string.IsNullOrEmpty(domPost.PostUrl)) continue;
+                    if (string.IsNullOrEmpty(domPost.PostUrl))
+                    {
+                        Console.WriteLine($"[DEBUG] DOM skip: empty PostUrl, caption='{domPost.Caption?.Substring(0, Math.Min(50, domPost.Caption?.Length ?? 0))}'");
+                        continue;
+                    }
 
                     var publishedDt = TryParsePublishedAt(domPost.PublishedAt);
-                    if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value) continue;
-                    if (startDt.HasValue && publishedDt.HasValue && publishedDt.Value < startDt.Value) continue;
+                    if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value)
+                    {
+                        Console.WriteLine($"[DEBUG] DOM filter end_date: {domPost.PostUrl} published={domPost.PublishedAt} > endDt");
+                        continue;
+                    }
+                    if (startDt.HasValue && publishedDt.HasValue && publishedDt.Value < startDt.Value)
+                    {
+                        Console.WriteLine($"[DEBUG] DOM filter start_date: {domPost.PostUrl} published={domPost.PublishedAt} < startDt");
+                        continue;
+                    }
 
                     domPost.Platform = "facebook";
                     var domPostId = ExtractPostKey(domPost.PostUrl);
@@ -235,6 +252,10 @@ public class FacebookCrawlerService
                             Type = "log",
                             Message = $"👉 Found Visible Post: {domPost.PostUrl} | Caption: {domPost.Caption[..Math.Min(40, domPost.Caption.Length)]}..."
                         });
+                    }
+                    else
+                    {
+                        Console.WriteLine($"[DEBUG] DOM merge (already in collected): {domPost.PostUrl}");
                     }
                 }
             }
@@ -288,18 +309,36 @@ public class FacebookCrawlerService
                 var newStories = new List<JsonElement>();
                 while (storyBuffer.TryDequeue(out var s)) newStories.Add(s);
 
+                Console.WriteLine($"[DEBUG] Scroll {scrollI}: Drained {newStories.Count} stories from buffer (total collectedPosts={collectedPosts.Count}, seenPostIds={seenPostIds.Count}, seenPostUrls={seenPostUrls.Count})");
+
                 foreach (var storyJson in newStories)
                 {
                     var postId = "";
                     try { postId = storyJson.GetProperty("post_id").GetString() ?? ""; } catch { }
-                    if (string.IsNullOrEmpty(postId) || seenPostIds.Contains(postId)) continue;
+                    if (string.IsNullOrEmpty(postId))
+                    {
+                        Console.WriteLine($"[DEBUG] SKIP story: empty post_id");
+                        continue;
+                    }
+                    if (seenPostIds.Contains(postId))
+                    {
+                        Console.WriteLine($"[DEBUG] SKIP story: post_id '{postId}' already in seenPostIds");
+                        continue;
+                    }
 
                     var post = FacebookParser.ExtractPostFromStoryNode(storyJson);
-                    if (post == null) continue;
+                    if (post == null)
+                    {
+                        Console.WriteLine($"[DEBUG] SKIP story: ExtractPostFromStoryNode returned null for post_id '{postId}'");
+                        // Log raw JSON snippet for debugging
+                        try { Console.WriteLine($"[DEBUG] Raw story snippet: {storyJson.GetRawText()[..Math.Min(500, storyJson.GetRawText().Length)]}"); } catch { }
+                        continue;
+                    }
 
                     var normalizedPostUrl = NormalizeFacebookUrl(post.PostUrl);
                     if (!string.IsNullOrEmpty(normalizedPostUrl) && seenPostUrls.Contains(normalizedPostUrl))
                     {
+                        Console.WriteLine($"[DEBUG] MERGE story: post_id '{postId}' URL already in seenPostUrls: {normalizedPostUrl}");
                         AddOrMergePost(post, storyJson, postId, "graphql");
                         continue;
                     }
@@ -315,9 +354,14 @@ public class FacebookCrawlerService
                     if (!string.IsNullOrEmpty(post.PublishedAt) && DateTime.TryParse(post.PublishedAt, out var pdt))
                         publishedDt = pdt;
 
-                    if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value) continue;
+                    if (endDt.HasValue && publishedDt.HasValue && publishedDt.Value > endDt.Value)
+                    {
+                        Console.WriteLine($"[DEBUG] FILTER end_date: post_id '{postId}' published={post.PublishedAt} > endDt={endDt.Value:O}");
+                        continue;
+                    }
                     if (startDt.HasValue && publishedDt.HasValue && publishedDt.Value < startDt.Value)
                     {
+                        Console.WriteLine($"[DEBUG] FILTER start_date: post_id '{postId}' published={post.PublishedAt} < startDt={startDt.Value:O}, stopping");
                         stopCrawling = true;
                         yield return new CrawlEvent { Type = "log", Message = "Đã chạm mốc start_date, dừng lấy bài." };
                         break;
@@ -368,6 +412,10 @@ public class FacebookCrawlerService
             page.Response -= OnResponse;
 
             // Sắp xếp bài viết theo thời gian giảm dần, lấy top maxPosts
+            Console.WriteLine($"[DEBUG] Total collectedPosts before sorting: {collectedPosts.Count}, maxPosts={maxPosts}");
+            foreach (var (p, _, pid, src) in collectedPosts)
+                Console.WriteLine($"[DEBUG]   Post: id={pid} src={src} url={p.PostUrl} published={p.PublishedAt} likes={p.Likes} caption={p.Caption[..Math.Min(60, p.Caption.Length)]}");
+
             var topPosts = collectedPosts
                 .OrderByDescending(p => TryParsePublishedAt(p.Post.PublishedAt) ?? DateTime.MinValue)
                 .Take(maxPosts)
