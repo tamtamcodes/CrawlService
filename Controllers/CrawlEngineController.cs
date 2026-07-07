@@ -8,6 +8,12 @@ using SocialCrawler.Services;
 
 namespace SocialCrawler.Controllers;
 
+/// <summary>
+/// Next.js compatible SSE-stream-only endpoints for Facebook and TikTok crawling.
+/// All responses are <c>text/event-stream</c> (PushStreamResult).
+/// Does NOT support JSON mode or field projection.
+/// Designed for frontend consumption where real-time progress is needed.
+/// </summary>
 [ApiController]
 [Route("crawl")]
 public class CrawlEngineController : ControllerBase
@@ -32,6 +38,31 @@ public class CrawlEngineController : ControllerBase
         _crawlState = crawlState;
     }
 
+    /// <summary>
+    /// Crawl Facebook page(s) and stream results as SSE events.
+    /// Always returns <c>text/event-stream</c>. Progress, log, and found posts are
+    /// streamed in real-time. Only one crawl runs at a time (global lock).
+    /// </summary>
+    /// <param name="req">
+    /// Crawl request. See <see cref="CrawlEngineRequest"/>.
+    /// Required: <c>target</c> or <c>targets</c>.
+    /// Supports: <c>cookies</c>, <c>start_date</c>, <c>end_date</c>,
+    /// <c>facebook_max_posts</c> / <c>facebookMaxPosts</c>, <c>stop_urls</c>.
+    /// </param>
+    /// <returns>
+    /// SSE stream (text/event-stream) with events:
+    /// <c>event: log</c> — progress updates and found posts,
+    /// <c>event: error</c> — errors,
+    /// <c>event: done</c> — final results with <c>videos[]</c> (PostData[]) and <c>count</c>.
+    /// </returns>
+    /// <example>
+    /// POST /crawl/facebook
+    /// {
+    ///   "target": "https://www.facebook.com/page",
+    ///   "cookies": [...],
+    ///   "facebook_max_posts": 10
+    /// }
+    /// </example>
     [HttpPost("facebook")]
     public async Task<IActionResult> CrawlFacebook([FromBody] CrawlEngineRequest req)
     {
@@ -99,6 +130,33 @@ public class CrawlEngineController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Crawl TikTok profile(s) and stream results as SSE events.
+    /// Always returns <c>text/event-stream</c>. Videos are accumulated server-side and
+    /// returned in the final <c>done</c> event. Comments are embedded into
+    /// <see cref="TikTokVideoData.CommentsData"/> when <c>include_comments=true</c>.
+    /// Only one crawl runs at a time (global lock).
+    /// </summary>
+    /// <param name="req">
+    /// Crawl request. See <see cref="CrawlEngineRequest"/>.
+    /// Required: <c>target</c> (e.g. "@username") or <c>targets</c>.
+    /// Supports: <c>cookies</c>, <c>start_date</c>, <c>end_date</c>, <c>period</c>, <c>include_comments</c>.
+    /// </param>
+    /// <returns>
+    /// SSE stream (text/event-stream) with events:
+    /// <c>event: log</c> — progress updates,
+    /// <c>event: error</c> — errors,
+    /// <c>event: done</c> — final results with <c>videos[]</c> (TikTokVideoData[]) and <c>count</c>.
+    /// </returns>
+    /// <example>
+    /// POST /crawl/tiktok
+    /// {
+    ///   "target": "@username",
+    ///   "cookies": [...],
+    ///   "period": "week",
+    ///   "include_comments": true
+    /// }
+    /// </example>
     [HttpPost("tiktok")]
     public async Task<IActionResult> CrawlTikTok([FromBody] CrawlEngineRequest req)
     {
@@ -205,35 +263,91 @@ public class CrawlEngineController : ControllerBase
     }
 }
 
+/// <summary>
+/// Request model for <see cref="CrawlEngineController"/> endpoints.
+/// Supports both snake_case and camelCase for JSON property names.
+/// </summary>
 public class CrawlEngineRequest
 {
+    /// <summary>
+    /// Array of target URLs/usernames to crawl.
+    /// Takes precedence over <see cref="Target"/> when both are provided.
+    /// </summary>
+    /// <example>["https://www.facebook.com/page1", "https://www.facebook.com/page2"]</example>
     [JsonPropertyName("targets")]
     public List<string>? Targets { get; set; }
 
+    /// <summary>
+    /// Single target URL or username to crawl.
+    /// Ignored when <see cref="Targets"/> is provided.
+    /// </summary>
+    /// <example>"https://www.facebook.com/page"</example>
     [JsonPropertyName("target")]
     public string? Target { get; set; }
 
+    /// <summary>
+    /// Max Facebook posts to keep (camelCase).
+    /// Only the N most recent posts are returned after sorting.
+    /// </summary>
+    /// <example>10</example>
     [JsonPropertyName("facebookMaxPosts")]
     public int? FacebookMaxPosts { get; set; }
 
+    /// <summary>
+    /// Max Facebook posts to keep (snake_case alias).
+    /// Used as fallback when <see cref="FacebookMaxPosts"/> is null.
+    /// </summary>
+    /// <example>10</example>
     [JsonPropertyName("facebook_max_posts")]
     public int? FacebookMaxPostsSnake { get; set; }
 
+    /// <summary>
+    /// Browser cookies array. Each cookie must include <c>name</c>, <c>value</c>, <c>domain</c>.
+    /// See <see cref="PlaywrightCookie"/> for full format.
+    /// </summary>
+    /// <example>[{ "name": "c_user", "value": "123", "domain": ".facebook.com", "path": "/" }]</example>
     [JsonPropertyName("cookies")]
     public JsonElement? Cookies { get; set; }
 
+    /// <summary>
+    /// Start date filter (inclusive). ISO 8601 date string.
+    /// Posts published before this date are skipped.
+    /// When the crawler encounters a post older than start_date, it stops entirely.
+    /// </summary>
+    /// <example>"2026-07-01"</example>
     [JsonPropertyName("start_date")]
     public string? StartDate { get; set; }
 
+    /// <summary>
+    /// End date filter (inclusive). ISO 8601 date string.
+    /// Posts published after this date are skipped.
+    /// Internally adds 1 day to make the date fully inclusive.
+    /// </summary>
+    /// <example>"2026-07-07"</example>
     [JsonPropertyName("end_date")]
     public string? EndDate { get; set; }
 
+    /// <summary>
+    /// Period string for TikTok date filtering (used when start/end dates are not specified).
+    /// </summary>
+    /// <example>"30 days", "week", "month"</example>
     [JsonPropertyName("period")]
     public string? Period { get; set; }
 
+    /// <summary>
+    /// Stop URLs for Facebook incremental crawl.
+    /// When a post matching one of these URLs is found, the crawler stops immediately.
+    /// Use this to only fetch posts newer than what you already have.
+    /// </summary>
+    /// <example>["https://www.facebook.com/page/posts/existing-post"]</example>
     [JsonPropertyName("stop_urls")]
     public List<string>? StopUrls { get; set; }
 
+    /// <summary>
+    /// Whether to crawl comments for each TikTok video.
+    /// Default: false. Comments are embedded in <see cref="TikTokVideoData.CommentsData"/>.
+    /// </summary>
+    /// <example>true</example>
     [JsonPropertyName("include_comments")]
     public bool? IncludeComments { get; set; }
 }

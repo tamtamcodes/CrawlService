@@ -7,6 +7,11 @@ using SocialCrawler.Services;
 
 namespace SocialCrawler.Controllers;
 
+/// <summary>
+/// System management and social media crawl API.
+/// Provides health checks, status monitoring, crawl cancellation,
+/// Facebook/TikTok crawling (JSON or SSE stream), and session validation.
+/// </summary>
 [ApiController]
 public class CrawlController : ControllerBase
 {
@@ -32,11 +37,29 @@ public class CrawlController : ControllerBase
         _crawlState = crawlState;
     }
 
+    /// <summary>
+    /// Health check endpoint. Returns a simple status object confirming the service is alive.
+    /// </summary>
+    /// <returns>200 OK with <c>{ status: "ok", service: "social-crawler" }</c></returns>
+    /// <example>
+    /// GET /health
+    /// Response: { "status": "ok", "service": "social-crawler" }
+    /// </example>
     [HttpGet("/health", Name = "Health")]
     [Tags("System")]
     public IActionResult Health() =>
         Ok(new { status = "ok", service = "social-crawler" });
 
+    /// <summary>
+    /// Get current crawler status.
+    /// Reports whether a crawl is running, which target is being processed,
+    /// elapsed time, and global lock state.
+    /// </summary>
+    /// <returns>200 OK with status object: <c>{ state, target, elapsed_seconds, locked }</c></returns>
+    /// <example>
+    /// GET /status
+    /// Response: { "state": "running", "target": "https://www.facebook.com/page", "elapsed_seconds": 45.2, "locked": true }
+    /// </example>
     [HttpGet("/status", Name = "Status")]
     [Tags("System")]
     public IActionResult Status()
@@ -45,6 +68,16 @@ public class CrawlController : ControllerBase
         return Ok(new { state, target, elapsed_seconds = elapsed, locked });
     }
 
+    /// <summary>
+    /// Cancel the currently running crawl process.
+    /// If a crawl is in progress, signals cancellation and the lock will be released shortly.
+    /// If no crawl is running, returns immediately with a no-op message.
+    /// </summary>
+    /// <returns>200 OK with status and message</returns>
+    /// <example>
+    /// POST /cancel
+    /// Response: { "status": "ok", "message": "✅ Đã phát tín hiệu hủy tiến trình hiện tại..." }
+    /// </example>
     [HttpPost("/cancel", Name = "Cancel")]
     [Tags("System")]
     public IActionResult Cancel()
@@ -57,6 +90,33 @@ public class CrawlController : ControllerBase
         return Ok(new { status = "ok", message = "Không có tiến trình nào đang chạy." });
     }
 
+    /// <summary>
+    /// Crawl Facebook page(s) and return posts.
+    /// Default mode returns a JSON <see cref="CrawlApiResponse{FacebookRawItem}"/>.
+    /// Set <c>response_mode</c> to "stream" or "sse" for SSE text/event-stream.
+    /// Only one crawl runs at a time (global lock); concurrent requests are queued.
+    /// </summary>
+    /// <param name="req">
+    /// Crawl request parameters. See <see cref="CrawlRequest"/> for all supported fields.
+    /// Required: <c>target</c> or <c>targets</c>.
+    /// Optional: <c>cookies</c>, <c>start_date</c>, <c>end_date</c>, <c>facebook_max_posts</c>,
+    /// <c>stop_urls</c>, <c>include_transcripts</c>, <c>response_mode</c>, <c>fields</c>,
+    /// and scroll tuning parameters.
+    /// </param>
+    /// <returns>
+    /// JSON: 200 OK with <see cref="CrawlApiResponse{FacebookRawItem}"/>.
+    /// SSE: text/event-stream with progress/log/error/done events.
+    /// </returns>
+    /// <example>
+    /// POST /engine/crawl/facebook
+    /// {
+    ///   "target": "https://www.facebook.com/page",
+    ///   "cookies": [...],
+    ///   "start_date": "2026-07-01",
+    ///   "end_date": "2026-07-07",
+    ///   "facebook_max_posts": 10
+    /// }
+    /// </example>
     [HttpPost("engine/crawl/facebook", Name = "CrawlFacebook")]
     [Tags("Crawlers")]
     public async Task<IActionResult> CrawlFacebook([FromBody] CrawlRequest req)
@@ -209,6 +269,33 @@ public class CrawlController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Crawl TikTok profile(s) and return videos.
+    /// Default mode returns a JSON <see cref="CrawlApiResponse{TikTokRawItem}"/>.
+    /// Set <c>response_mode</c> to "stream" or "sse" for SSE text/event-stream.
+    /// This endpoint also serves as the compatibility alias at <c>POST /engine/crawl</c>.
+    /// Only one crawl runs at a time (global lock); concurrent requests are queued.
+    /// </summary>
+    /// <param name="req">
+    /// Crawl request parameters. See <see cref="CrawlRequest"/> for all supported fields.
+    /// Required: <c>target</c> (e.g. "@username") or <c>targets</c>.
+    /// Optional: <c>cookies</c>, <c>start_date</c>, <c>end_date</c>, <c>period</c>,
+    /// <c>include_comments</c>, <c>response_mode</c>, <c>fields</c>.
+    /// </param>
+    /// <returns>
+    /// JSON: 200 OK with <see cref="CrawlApiResponse{TikTokRawItem}"/>.
+    /// SSE: text/event-stream with progress/log/error/done events.
+    /// </returns>
+    /// <example>
+    /// POST /engine/crawl/tiktok
+    /// {
+    ///   "target": "@username",
+    ///   "cookies": [...],
+    ///   "start_date": "2026-06-27",
+    ///   "end_date": "2026-06-28",
+    ///   "period": "week"
+    /// }
+    /// </example>
     [HttpPost("engine/crawl/tiktok", Name = "CrawlTikTok")]
     [HttpPost("engine/crawl", Name = "CrawlTikTokCompat")]
     [Tags("Crawlers")]
@@ -362,6 +449,22 @@ public class CrawlController : ControllerBase
         });
     }
 
+    /// <summary>
+    /// Validate TikTok session cookies.
+    /// Tests whether the provided TikTok cookies are still valid
+    /// by making a lightweight request to TikTok.
+    /// </summary>
+    /// <param name="req">Request containing <c>session_data</c> (array of cookie objects).</param>
+    /// <returns>200 OK with <c>{ ok: bool, message: string }</c></returns>
+    /// <example>
+    /// POST /validate_session
+    /// {
+    ///   "session_data": [
+    ///     { "name": "sessionid", "value": "...", "domain": ".tiktok.com", "path": "/" }
+    ///   ]
+    /// }
+    /// Response: { "ok": true, "message": "Session valid" }
+    /// </example>
     [HttpPost("/validate_session", Name = "ValidateSession")]
     [Tags("System")]
     public async Task<IActionResult> ValidateSession([FromBody] ValidateSessionRequest req)
@@ -371,6 +474,22 @@ public class CrawlController : ControllerBase
         return Ok(new { ok, message });
     }
 
+    /// <summary>
+    /// Validate Facebook session cookies.
+    /// Tests whether the provided Facebook cookies are still valid
+    /// by making a lightweight request to Facebook.
+    /// </summary>
+    /// <param name="req">Request containing <c>session_data</c> (array of cookie objects).</param>
+    /// <returns>200 OK with <c>{ ok: bool, message: string }</c></returns>
+    /// <example>
+    /// POST /validate_facebook_session
+    /// {
+    ///   "session_data": [
+    ///     { "name": "c_user", "value": "...", "domain": ".facebook.com", "path": "/" }
+    ///   ]
+    /// }
+    /// Response: { "ok": true, "message": "Session valid" }
+    /// </example>
     [HttpPost("/validate_facebook_session", Name = "ValidateFacebookSession")]
     [Tags("System")]
     public async Task<IActionResult> ValidateFacebookSession([FromBody] ValidateSessionRequest req)
@@ -436,15 +555,28 @@ public class CrawlController : ControllerBase
     }
 }
 
+/// <summary>
+/// An <see cref="IActionResult"/> that writes an SSE (Server-Sent Events) stream to the response.
+/// Sets Content-Type to text/event-stream, disables caching, and disables nginx buffering.
+/// </summary>
 public class PushStreamResult : IActionResult
 {
     private readonly Func<Stream, CancellationToken, Task> _callback;
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="PushStreamResult"/>.
+    /// </summary>
+    /// <param name="callback">Async callback that writes SSE events to the stream.</param>
     public PushStreamResult(Func<Stream, CancellationToken, Task> callback)
     {
         _callback = callback;
     }
 
+    /// <summary>
+    /// Executes the SSE stream result by configuring response headers
+    /// and invoking the callback to write events.
+    /// </summary>
+    /// <param name="context">The action context.</param>
     public async Task ExecuteResultAsync(ActionContext context)
     {
         var response = context.HttpContext.Response;
