@@ -31,8 +31,4 @@ EXPOSE 8080
 # Copy published outputs
 COPY --from=publish /app/publish .
 
-# Run a first-time dummy command to trigger CloakBrowser stealth binary download & cache it inside the Docker image
-RUN mkdir -p /app/.cloakbrowser && \
-    dotnet SocialCrawler.dll --help || true
-
 ENTRYPOINT ["dotnet", "SocialCrawler.dll"]
